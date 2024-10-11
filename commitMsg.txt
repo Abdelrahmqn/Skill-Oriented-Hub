@@ -1,0 +1,13 @@
+Handling User Management
+
+## Details
+- Styled login and registration templates.
+- Implemented account update functionality.
+
+## Changes Made
+- Separated auth templates into a dedicated folder with an empty layout.
+- Updated the Author file by adding my name.
+- Added script to automate standard commit messages and pushes.
+
+## Related Issues
+- Still working on reset password functionality.

@@ -44,7 +44,7 @@ def register():
         flash('You have successfully registered! You can now log in.', 'success')
         return redirect(url_for('auth.login'))
 
-    return render_template('register.html', form=form)
+    return render_template('auth/register.html', form=form)
 
 # Login Form
 class LoginForm(FlaskForm):
@@ -67,7 +67,7 @@ def login():
         else:
             flash('Invalid email or password.', 'danger')
 
-    return render_template('login.html', form=form)
+    return render_template('auth/login.html', form=form)
 
 # Logout Route
 @bp.route('/logout')
@@ -76,3 +76,51 @@ def logout():
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('main.index'))
+
+
+# Update Account Form
+class UpdateAccountForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Register')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('Email is already in use.')
+
+
+# Update Account route
+@bp.route("/account", methods=['GET', 'POST'])
+@login_required
+def account():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.name = form.name.data
+        current_user.email = form.email.data
+        print('hi')
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('auth.account'))
+    elif request.method == 'GET':
+        form.name.data = current_user.name
+        form.email.data = current_user.email
+    return render_template('account.html', form=form)
+
+
+class RequestResetForm(FlaskForm):
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('There is no account with that email. You must register first.')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password',
+                                    validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')
