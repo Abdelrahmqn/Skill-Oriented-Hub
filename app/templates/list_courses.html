@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Available Courses</h2>
+<ul>
+    {% for course in courses %}
+    <li>
+        <strong><a href="{{ url_for('course.course_details', course_id=course.id) }}">{{ course.title }}</a></strong> - {{ course.description }}<br>
+        Price: ${{ course.price }}<br>
+        Instructor: {{ course.instructor.name }}<br>
+        {% if current_user.is_authenticated %}
+        {% if current_user.role == 'student' %}
+        <a href="{{ url_for('course.enroll', course_id=course.id) }}">Enroll</a>
+        {% endif %}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

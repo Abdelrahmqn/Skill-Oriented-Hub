@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Student Dashboard</h2>
+<h3>My Enrolled Courses</h3>
+<ul>
+    {% for enrollment in enrollments %}
+    <li>
+        <strong>{{ enrollment.course.title }}</strong> - {{ enrollment.course.description }}<br>
+        <a href="{{ url_for('course.course_details', course_id=enrollment.course.id) }}">View Details</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

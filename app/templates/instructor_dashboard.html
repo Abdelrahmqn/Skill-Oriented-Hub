@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Instructor Dashboard</h2>
+<h3>My Courses</h3>
+<ul>
+    {% for course in courses %}
+    <li>
+        <strong>{{ course.title }}</strong> - {{ course.description }}<br>
+        <a href="{{ url_for('course.course_details', course_id=course.id) }}">View Details</a>
+        <a href="{{ url_for('course.edit_course', course_id=course.id) }}">Edit</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('course.create_course') }}">Create a New Course</a>
+{% endblock %}
