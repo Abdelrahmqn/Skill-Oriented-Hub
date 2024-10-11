@@ -7,9 +7,33 @@
 </head>
 <body>
 <nav>
-    <!-- Navigation bar will go here -->
+    <a href="{{ url_for('main.index') }}">Home</a>
+
+    <!-- Courses link for everyone -->
+    <a href="{{ url_for('course.list_courses') }}">Courses</a>
+
+    {% if current_user.is_authenticated %}
+    {% if current_user.role == 'instructor' %}
+    <a href="{{ url_for('course.instructor_dashboard') }}">Instructor Dashboard</a>
+    <a href="{{ url_for('course.create_course') }}">Create Course</a>
+    {% elif current_user.role == 'student' %}
+    <a href="{{ url_for('course.student_dashboard') }}">Student Dashboard</a>
+    {% endif %}
+    <a href="{{ url_for('auth.logout') }}">Logout ({{ current_user.name }})</a>
+    {% else %}
+    <a href="{{ url_for('auth.login') }}">Login</a>
+    <a href="{{ url_for('auth.register') }}">Register</a>
+    {% endif %}
 </nav>
+
 <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
 </div>
 </body>

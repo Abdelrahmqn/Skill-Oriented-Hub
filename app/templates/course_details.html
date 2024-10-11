@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>{{ course.title }}</h2>
+<p><strong>Description:</strong> {{ course.description }}</p>
+<p><strong>Price:</strong> ${{ course.price }}</p>
+<p><strong>Instructor:</strong> {{ course.instructor.name }}</p>
+
+{% if current_user.is_authenticated %}
+{% if current_user.role == 'student' %}
+<a href="{{ url_for('course.enroll', course_id=course.id) }}">Enroll in this course</a>
+{% endif %}
+{% endif %}
+
+<a href="{{ url_for('course.list_courses') }}">Back to Courses</a>
+{% endblock %}
