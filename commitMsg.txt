@@ -1,13 +1,10 @@
-Handling User Management
+Handling User Management part two
 
 ## Details
-- Styled login and registration templates.
-- Implemented account update functionality.
-
-## Changes Made
-- Separated auth templates into a dedicated folder with an empty layout.
-- Updated the Author file by adding my name.
-- Added script to automate standard commit messages and pushes.
+- Implemented reset password functionality.
 
 ## Related Issues
-- Still working on reset password functionality.
+- nothing
+
+## Changes Made
+- add function  get_reset_token and verify_reset_token to the user model
