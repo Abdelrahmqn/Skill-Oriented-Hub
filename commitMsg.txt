@@ -1,12 +1,6 @@
-Improve User Management design
+create Landing Page
 
 ## Details
-- Added dynamic navbar.
-- Added CSS file.
-- Added .gitignore for pycache files.
-
-## Related Issues
-- Extended token validation time to 30 minutes instead of 5 seconds.
-
-## Changes Made
-- Removed separate auth layouts for login and register. Now, both use the unified layout.html.
+- image section hero with image dispalya flex
+- cretae section Our Key Features
+- What Our Students Say (will be take information from reveiw)

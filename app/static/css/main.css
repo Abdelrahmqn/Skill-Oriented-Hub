@@ -75,3 +75,41 @@
     color: #fff;
     text-decoration: none;
 }
+
+
+/* Custom styles for the landing page */
+.hero {
+  height: auto;
+  min-height: 700px;
+  background: linear-gradient(to right, #fc83cd33, var(--vert));
+
+}
+
+.hero .hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+.hero .hero-content .text-section {
+  max-width: 600px;
+}
+
+.hero img {
+  max-width: 100%;
+  height: auto;
+}
+
+.btn-primary {
+  background-color: #e746c4be ;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--vert)!important;
+}
+.cta{
+  background-color: var(--vert) !important;
+
+}
