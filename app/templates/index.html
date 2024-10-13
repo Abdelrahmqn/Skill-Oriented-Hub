@@ -1,6 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<h1>Welcome to the Course Platform</h1>
+<ul>
+  {% for course in courses %}
+    <li><a href="{{ url_for('course.course_details', course_id=course.id) }}">{{ course.title }}</a></li>
+  {% endfor %}
+</ul>
     <h1>Welcome to the e-Learning Platform</h1>
     <p>Start learning with us today!</p>
 {% endblock %}

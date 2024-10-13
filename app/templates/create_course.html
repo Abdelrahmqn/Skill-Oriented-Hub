@@ -2,11 +2,12 @@
 
 {% block content %}
 <h2>Create Course</h2>
-<form method="POST">
+<form method="POST" action="{{ url_for('course.create_course') }}">
     {{ form.hidden_tag() }}
-    <p>{{ form.title.label }}<br>{{ form.title }}</p>
-    <p>{{ form.description.label }}<br>{{ form.description }}</p>
-    <p>{{ form.price.label }}<br>{{ form.price }}</p>
-    <p>{{ form.submit }}</p>
+    {{ form.title.label }} {{ form.title() }}
+    {{ form.description.label }} {{ form.description() }}
+    {{ form.price.label }} {{ form.price() }}
+    {{ form.submit() }}
 </form>
+
 {% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+<h2>Checkout for {{ course.title }}</h2>
+<p>Price: ${{ course.price }}</p>
+
+<form method="POST">
+    <button type="submit">Proceed to Payment</button>
+</form>
+{% endblock %}

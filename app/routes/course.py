@@ -24,22 +24,32 @@ def course_details(course_id):
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_course():
-    if current_user.role != 'instructor':
-        flash('Only instructors can create courses.', 'danger')
-        return redirect(url_for('main.index'))
-
+    # if current_user.role != 'instructor':
+    #     flash('Only instructors can create courses.', 'danger')
+    #     return redirect(url_for('main.index'))
+    print(f"Current user role: {current_user.role}")
     form = CourseForm()
     if form.validate_on_submit():
-        course = Course(
-            title=form.title.data,
-            description=form.description.data,
-            price=form.price.data,
-            teacher_id=current_user.id
-        )
-        db.session.add(course)
-        db.session.commit()
-        flash('Course created successfully!', 'success')
-        return redirect(url_for('course.list_courses'))
+        try:
+            # Debug output for form values
+            print(f"Creating Course: {form.title.data}, Price: {form.price.data}")
+
+            course = Course(
+                title=form.title.data,
+                description=form.description.data,
+                price=form.price.data,
+                teacher_id=current_user.id
+            )
+            db.session.add(course)
+            db.session.commit()
+
+            flash('Course created successfully!', 'success')
+            return redirect(url_for('course.list_courses'))
+        except Exception as e:
+            # bugs
+            print(f"Error: {str(e)}")
+            db.session.rollback()
+            flash('An error occurred while creating the course.', 'danger')
 
     return render_template('create_course.html', form=form)
 
