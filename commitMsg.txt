@@ -1,19 +1,4 @@
-
-A brief summary of the changes (50 characters or less).
+add image for features
 
 ## Details
-A more detailed explanation of the changes, including:
-- What was changed and why
-- Any relevant context or background information
-- Impact on the system or users
-
-## Related Issues
-- List any related issue numbers or links (if applicable):
-  - Issue #123
-  - Issue #456
-
-## Changes Made
-- Bullet points summarizing the main changes:
-  - Added feature X
-  - Fixed bug Y
-  - Updated documentation for Z
+- 3 images
