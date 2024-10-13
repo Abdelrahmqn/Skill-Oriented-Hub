@@ -1,4 +1,4 @@
-{% extends 'auth/layout.html' %}
+{% extends 'layout.html' %}
 
 {% block content %}
 <!-- Modal for Registration -->
@@ -100,10 +100,7 @@
             By clicking Sign up, you agree to the terms of use.
           </small>
           <div class="border-top py-2 mt-4">
-            <small>
-              Already Have An Account?
-              <a class="ml-2" href="{{url_for('auth.login')}}">Sign In</a>
-            </small>
+
           </div>
         </form>
       </div>

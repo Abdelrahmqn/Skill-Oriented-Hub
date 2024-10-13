@@ -1,4 +1,4 @@
-{% extends 'auth/layout.html' %}
+{% extends 'layout.html' %}
 
 {% block content %}
 <!-- Modal for Login -->
@@ -50,17 +50,13 @@
                     <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Login</button>
 
                 </form>
-                <div class="form-group">
-                    {{ form.submit(class="btn btn-outline-info") }}
-                    <small class="text-muted ml-2">
-                        <a href="{{ url_for('auth.reset_request') }}">Forgot Password?</a>
+                <div class="form-group mt-2">
+                    <small class=" fs-6">
+                        <a href="{{ url_for('auth.reset_request') }}"> I Forgot My Password </a>
                     </small>
                 </div>
                 <div class="border-top py-2 mt-4">
-                    <small class="my-2 d-block">
-                        Need An Account?
-                        <a class="ml-2" href="{{ url_for('auth.register') }}">Sign Up Now</a>
-                    </small>
+
                 </div>
             </div>
         </div>

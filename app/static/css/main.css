@@ -1,0 +1,77 @@
+:root {
+    --vert: #7b9b2b;
+
+}
+
+*{
+    font-family: 'Lato', sans-serif;
+}
+
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-toggler:focus,
+.btn-close:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.nav-link {
+    font-weight: 500;
+    position: relative;
+    border: none;
+}
+@media (min-width: 768px) {
+    .nav-link {
+        font-size: 1rem;
+    }
+
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translatex(-50%);
+        width: 0%;
+        height: 2px;
+        background-color: var(--vert);
+        visibility: hidden;
+        transition: 0.3s ease-in-out;
+    }
+}
+
+.nav-link:hover::before,
+.nav-link.active::before {
+    width: 100%;
+    visibility: visible;
+}
+
+
+/* Common button styles (for both Log In and Sign Up) */
+.navbar-collapse .btn-log-in,
+.navbar-collapse .btn-sign-up {
+
+    color: var(--vert);
+    width: 100px;
+    margin-right: 15px;
+    padding: 6px 12px;
+    text-align: center;
+    text-decoration: none;
+    border: 2px solid var(--vert);
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+    user-select: none;
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+
+
+/* Hover effects */
+.navbar-collapse .btn-log-in:hover,
+.navbar-collapse .btn-sign-up:hover {
+    background-color: var(--vert);
+    color: #fff;
+    text-decoration: none;
+}

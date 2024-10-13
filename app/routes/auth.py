@@ -63,6 +63,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
+            flash('You have successfully log in.', 'success')
             return redirect(url_for('main.index'))
         else:
             flash('Invalid email or password.', 'danger')
@@ -75,7 +76,7 @@ def login():
 def logout():
     logout_user()
     flash('You have been logged out.', 'info')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('auth.login'))
 
 
 # Update Account Form
@@ -146,7 +147,7 @@ def reset_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password.', 'info')
+        flash('An email has been sent with instructions to reset your password. Please close this window and check your email', 'info')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_request.html', form=form)
 

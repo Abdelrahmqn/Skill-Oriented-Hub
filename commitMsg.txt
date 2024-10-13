@@ -1,10 +1,12 @@
-Handling User Management part two
+Improve User Management design
 
 ## Details
-- Implemented reset password functionality.
+- Added dynamic navbar.
+- Added CSS file.
+- Added .gitignore for pycache files.
 
 ## Related Issues
-- nothing
+- Extended token validation time to 30 minutes instead of 5 seconds.
 
 ## Changes Made
-- add function  get_reset_token and verify_reset_token to the user model
+- Removed separate auth layouts for login and register. Now, both use the unified layout.html.
