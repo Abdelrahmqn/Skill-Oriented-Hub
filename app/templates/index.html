@@ -21,7 +21,7 @@
 
         <!-- Image Content -->
         <div class="col-lg-6">
-          <img src="{{ url_for('static', filename='css/img/landing.png') }}" class="img-fluid rounded" alt="Hero Image">
+          <img src="{{ url_for('static', filename='css/img/landing.png') }}" class="img-fluid rounded rounded-5" alt="Hero Image">
         </div>
       </div>
     </div>
@@ -34,7 +34,7 @@
       <div class="row text-center g-4">
         <div class="col-md-4">
           <div class="card shadow border-light rounded-3">
-            <img src="{{ url_for('static', filename='css/img/flexible.jfif') }}" class="card-img-top rounded-top" alt="Wide Range of Courses">
+            <img src="{{ url_for('static', filename='css/img/3.svg') }}" class="card-img-top rounded-top" alt="Wide Range of Courses">
             <div class="card-body">
               <h5 class="card-title">Wide Range of Courses</h5>
               <p class="card-text">We offer courses in various domains, including technology, business, design, and more, to cater to diverse learning needs.</p>
@@ -43,7 +43,7 @@
         </div>
         <div class="col-md-4">
           <div class="card shadow border-light rounded-3">
-            <img src="{{ url_for('static', filename='css/img/instructors.jpg') }}" class="card-img-top rounded-top" alt="Expert Instructors">
+            <img src="{{ url_for('static', filename='css/img/2.svg') }}" class="card-img-top rounded-top" alt="Expert Instructors">
             <div class="card-body">
               <h5 class="card-title">Expert Instructors</h5>
               <p class="card-text">Learn from industry experts and instructors with years of experience. Gain practical knowledge that will help you in your career.</p>
@@ -52,7 +52,7 @@
         </div>
         <div class="col-md-4">
           <div class="card shadow border-light rounded-3">
-            <img src="{{ url_for('static', filename='css/img/flexible.jfif') }}" class="card-img-top rounded-top" alt="Flexible Learning">
+            <img src="{{ url_for('static', filename='css/img/1.svg') }}" class="card-img-top rounded-top" alt="Flexible Learning">
             <div class="card-body">
               <h5 class="card-title">Flexible Learning</h5>
               <p class="card-text">Study at your own pace. Our platform offers flexible schedules so you can learn when it suits you, whether you're at home or on the go.</p>
@@ -64,7 +64,7 @@
   </section>
 
   <!-- Testimonials Section -->
-  <section class="testimonials bg-white py-5">
+  <section class="testimonials  py-1 my-5">
     <div class="container">
       <h2 class="display-6 text-center mb-4">What Our Students Say</h2>
       <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -119,11 +119,11 @@
   </section>
 
   <!-- Call to Action Section -->
-  <section class="cta bg-info text-center py-5">
+  <section class="cta text-center py-5">
     <div class="container">
-      <h2 class="display-5 mb-3">Ready to Start Your Learning Journey?</h2>
+      <h2 class="display-6 ">Ready to Start Your Learning Journey?</h2>
       <p class="lead mb-4">Join now to explore courses, enhance your skills, and take the next step towards your future!</p>
-      <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg shadow-sm px-4 py-2">Sign Up Now</a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg mt-3">Sign Up Now</a>
     </div>
   </section>
 

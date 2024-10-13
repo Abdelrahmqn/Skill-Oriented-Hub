@@ -1,11 +1,13 @@
 :root {
     --vert: #7b9b2b;
+    --roze: #fc83cd33;
 
 }
 
 *{
     font-family: 'Lato', sans-serif;
 }
+
 
 .navbar-toggler {
     border: none;
@@ -81,7 +83,7 @@
 .hero {
   height: auto;
   min-height: 700px;
-  background: linear-gradient(to right, #fc83cd33, var(--vert));
+
 
 }
 
@@ -110,6 +112,6 @@
   background-color: var(--vert)!important;
 }
 .cta{
-  background-color: var(--vert) !important;
+
 
 }
