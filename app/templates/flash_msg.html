@@ -1,0 +1,74 @@
+<main role="main" class="container">
+  <div class="row">
+    <div class="col-md-12">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible flash-message" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</main>
+
+<!-- CSS pour l'animation d'apparition et de disparition -->
+<style>
+  .flash-message {
+    position: fixed;
+    /* Changed to fixed to avoid layout shift */
+    top: 20px;
+    /* Position from the top */
+    left: 50%;
+    width: 60%;
+    min-width: 450px;
+    /* Center horizontally */
+    transform: translateX(-50%) translateY(-100%);
+    /* Center and position off-screen */
+    opacity: 0;
+    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    z-index: 1050;
+    /* Ensure it appears above other content */
+  }
+
+  .flash-message.show {
+    transform: translateX(-50%) translateY(0);
+    /* Bring to normal position */
+    opacity: 1;
+  }
+
+  .flash-message.hide {
+    transform: translateX(-50%) translateY(-100%);
+    /* Move off-screen */
+    opacity: 0;
+  }
+</style>
+
+<!-- JavaScript pour gérer l'apparition et la disparition des messages -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let flashMessages = document.querySelectorAll('.flash-message');
+    flashMessages.forEach(function (message) {
+      // Ajoute la classe 'show' pour déclencher l'animation d'entrée
+      setTimeout(function () {
+        message.classList.add('show');
+      }, 100);  // Délai court pour voir l'animation d'apparition
+
+      // Après 5 secondes, on déclenche l'animation de sortie
+      setTimeout(function () {
+        message.classList.remove('show');  // Enlève l'animation d'entrée
+        message.classList.add('hide');     // Ajoute l'animation de sortie
+
+        // Cache complètement l'élément après l'animation
+        setTimeout(function () {
+          message.style.display = 'none';
+        }, 500);  // Correspond à la durée de la transition CSS (0.5s)
+      }, 3000);  // Délai avant disparition (5 secondes)
+    });
+  });
+</script>

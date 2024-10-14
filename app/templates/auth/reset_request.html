@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Modal for Password Reset Request -->
+<div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog" id="modalResetPassword">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Request Reset Password</h1>
+            </div>
+
+            <div class="modal-body p-5 pt-0">
+                <!-- Flask-WTF Form inside Modal -->
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <!-- Email Field with Validation in Modal -->
+                    <div class="form-floating mb-3">
+                        {% if form.email.errors %}
+                        {{ form.email(class="form-control rounded-3 is-invalid") }}
+                        <label for="floatingEmail">{{ form.email.label.text }}</label>
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.email(class="form-control rounded-3") }}
+                        <label for="floatingEmail">{{ form.email.label.text }}</label>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Request Reset</button>
+
+                </form>
+
+                <div class="form-group">
+                    <small class="text-muted ml-2">
+                        <a href="{{ url_for('auth.login') }}">Back to Login</a>
+                    </small>
+                </div>
+
+                <div class="border-top py-2 mt-4">
+                    <small class="my-2 d-block">
+                        Need An Account?
+                        <a class="ml-2" href="{{ url_for('auth.register') }}">Sign Up Now</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

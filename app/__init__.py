@@ -2,10 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_mail import Mail
 
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
+mail = Mail()
 
 def create_app(config_class='config.Config'):
     app = Flask(__name__)
@@ -16,6 +18,8 @@ def create_app(config_class='config.Config'):
     login_manager.init_app(app)
 
     login_manager.login_view = 'auth.login'
+    mail.init_app(app)
+
 
     from .models import User
 
