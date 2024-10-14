@@ -57,17 +57,39 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
             </li>
+            
             {% else %}
+              {% if request.endpoint == 'auth.register' %}
             <!-- Login/Register links for guests -->
-              {% if request.endpoint == 'auth.login' %}
-              <li class="nav-item">
-                <a class="nav-link btn btn-sign-up" href="{{ url_for('auth.register') }}">Register</a>
-              </li>
-              {% else %}
               <li class="nav-item">
                 <a class="nav-link btn btn-log-in me-3" href="{{ url_for('auth.login') }}">Login</a>
               </li>
+              {% elif request.endpoint == 'auth.login' %}
+              <li class="nav-item">
+                <a class="nav-link btn btn-sign-up" href="{{ url_for('auth.register') }}">Register</a>
+              </li>
               {% endif %}
+            {% endif %}
+            {% if request.endpoint == 'main.index' %}
+            <li class="nav-item">
+              <a class="nav-link btn btn-sign-up" id="register-button">Register</a>
+            </li>
+            
+            <!-- Add an element at the bottom of the page -->
+            <div id="bottom-page" style="height: 50px;"></div>
+            
+            <!-- JavaScript to Scroll to Bottom -->
+            <script>
+              document.getElementById('register-button').addEventListener('click', function () {
+                window.scrollTo({
+                  top: document.body.scrollHeight,
+                  behavior: 'smooth'
+                });
+              });
+            </script>
+              <li class="nav-item">
+                <a class="nav-link btn btn-log-in me-3" href="{{ url_for('auth.login') }}">Login</a>
+              </li>
             {% endif %}
           </ul>
         </div>
