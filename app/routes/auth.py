@@ -90,7 +90,6 @@ class UpdateAccountForm(FlaskForm):
         if user:
             raise ValidationError('Email is already in use.')
 
-
 # Update Account route
 @bp.route("/account", methods=['GET', 'POST'])
 @login_required

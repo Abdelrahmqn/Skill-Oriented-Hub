@@ -2,12 +2,50 @@
 
 {% block content %}
 <h2>Edit Course: {{ course.title }}</h2>
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <p>{{ form.title.label }}<br>{{ form.title }}</p>
-    <p>{{ form.description.label }}<br>{{ form.description }}</p>
-    <p>{{ form.price.label }}<br>{{ form.price }}</p>
-    <p>{{ form.submit }}</p>
-</form>
-<a href="{{ url_for('course.instructor_dashboard') }}">Back to Dashboard</a>
+
+<div class="row">
+    <!-- Left column for the current course image and image upload -->
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Current Image</h5>
+                <img src="{{ url_for('static', filename='img_course/' + course.courseImage) }}" class="card-img-top mb-3"
+                    alt="{{ course.title }}" style="height: 300px; object-fit: cover;">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Upload New Image</h5>
+                <input type="file" class="form-control" name="courseImage">
+            </div>
+        </div>
+    </div>
+
+    <!-- Right column for the course editing form -->
+    <div class="col-md-8">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                <label for="title" class="form-label">{{ form.title.label }}</label>
+                {{ form.title(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">{{ form.description.label }}</label>
+                {{ form.description(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">{{ form.price.label }}</label>
+                {{ form.price(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+        <a href="{{ url_for('course.instructor_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+
 {% endblock %}
