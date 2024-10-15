@@ -4,13 +4,40 @@ from PIL import Image
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from app import db
-from app.models import Course, Enrollment
+from app.models import Course, Enrollment, Category, Content
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, FloatField, SubmitField
+from wtforms import StringField, TextAreaField, FloatField, SubmitField, IntegerField, SelectField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired
 
 bp = Blueprint('course', __name__, url_prefix='/courses')
+
+class CategoryForm(FlaskForm):
+    name = StringField('Category Name', validators=[DataRequired()])
+    submit = SubmitField('Add Category')
+
+@bp.route('/add_category', methods=['GET', 'POST'])
+@login_required
+def add_category():
+    form = CategoryForm()
+    if form.validate_on_submit():
+        category_name = form.name.data
+        existing_category = Category.query.filter_by(name=category_name).first()
+
+        if existing_category:
+            flash('Category already exists!', 'danger')
+        else:
+            new_category = Category(name=category_name)
+            db.session.add(new_category)
+            db.session.commit()
+            flash('Category added successfully!', 'success')
+            return redirect(url_for('course.create_course'))  # Redirect to wherever appropriate in your app
+
+    return render_template('add_category.html', form=form)
+
+
+
+
 
 # Form for creating a course
 class CourseForm(FlaskForm):
@@ -18,7 +45,12 @@ class CourseForm(FlaskForm):
     description = TextAreaField('Description', validators=[DataRequired()])
     courseImage = FileField('Add Image', validators=[FileAllowed(['jpg','png','jfif'])])
     price = FloatField('Price', validators=[DataRequired()])
+    category_id = SelectField('Category', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Create Course')
+
+    def __init__(self, *args, **kwargs):
+        super(CourseForm, self).__init__(*args, **kwargs)
+        self.category_id.choices = [(category.id, category.name) for category in Category.query.all()]
 
 # Route display course details
 @bp.route('/<int:course_id>')
@@ -55,16 +87,19 @@ def create_course():
     form = CourseForm()
     if form.validate_on_submit():
         if form.courseImage.data:
-           course_Image   = save_picture(form.courseImage.data)
+            course_Image   = save_picture(form.courseImage.data)
         else:
             course_Image  = None
+
+        selected_category = Category.query.get(form.category_id.data)
 
         course = Course(
             title=form.title.data,
             description=form.description.data,
             price=form.price.data,
             teacher_id=current_user.id,
-            courseImage= course_Image
+            courseImage= course_Image,
+            category_id=selected_category.id
         )
         db.session.add(course)
         db.session.commit()
@@ -165,7 +200,7 @@ def edit_course(course_id):
         course.title = form.title.data
         course.description = form.description.data
         course.price = form.price.data
-
+        course.category_id = form.category_id.data
         db.session.commit()
 
         flash('Course updated successfully!', 'success')
@@ -197,3 +232,34 @@ def delete_course(course_id):
         flash('You are not authorized to delete this course.', 'danger')
 
     return redirect(url_for('course.instructor_dashboard'))
+
+
+class ContentForm(FlaskForm):
+    section_title = StringField('Section Title', validators=[DataRequired()])
+    lesson_title = StringField('Lesson Title', validators=[DataRequired()])
+    lesson_type = SelectField('Lesson Type', choices=[('video', 'Video'), ('text', 'Text'), ('quiz', 'Quiz')], validators=[DataRequired()])
+    lesson_content = TextAreaField('Lesson Content', validators=[DataRequired()])
+    order = IntegerField('Order', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+@bp.route('/course/<int:course_id>/content/new', methods=['GET', 'POST'])
+def create_content(course_id):
+    course = Course.query.get_or_404(course_id)
+    form = ContentForm()
+
+    if form.validate_on_submit():
+        new_content = Content(
+            section_title=form.section_title.data,
+            lesson_title=form.lesson_title.data,
+            lesson_type=form.lesson_type.data,
+            lesson_content=form.lesson_content.data,
+            order=form.order.data,
+            course_id=course_id
+        )
+        db.session.add(new_content)
+        db.session.commit()
+        flash('Content added successfully!', 'success')
+        return redirect(url_for('course_details', course_id=course_id))
+
+    return render_template('create_content.html', form=form, course=course)

@@ -20,6 +20,7 @@
                 <p class="card-text"><strong>Description:</strong> {{ course.description }}</p>
                 <p class="card-text"><strong>Price:</strong> ${{ course.price }}</p>
                 <p class="card-text"><strong>Instructor:</strong> {{ course.instructor.name }}</p>
+                <p class="card-text"><strong>Category :</strong> {{ course.category.name }}</p>
                 <p class="card-text"><strong>Total Student:</strong> {{ course.total_students }}</p>
 
 
@@ -42,6 +43,7 @@
                     {% if current_user.role == 'instructor' %}
                         <!-- Instructor-specific buttons -->
                         <a href="{{ url_for('course.edit_course', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Edit</a>
+                        <a href="{{ url_for('course.create_content', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Add Content</a>
                         <form action="{{ url_for('course.delete_course', course_id=course.id) }}" method="POST" class="mt-2">
                             <button type="submit" class="btn btn-danger btn-sm w-25" onclick="return confirm('Are you sure you want to delete this course and related enrollments ?');">Delete Course</button>
                         </form>

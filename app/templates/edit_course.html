@@ -24,24 +24,33 @@
         <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
 
+            <!-- Title Field -->
             <div class="mb-3">
                 <label for="title" class="form-label">{{ form.title.label }}</label>
                 {{ form.title(class="form-control") }}
             </div>
 
+            <!-- Description Field -->
             <div class="mb-3">
                 <label for="description" class="form-label">{{ form.description.label }}</label>
                 {{ form.description(class="form-control") }}
             </div>
 
+            <!-- Price Field -->
             <div class="mb-3">
                 <label for="price" class="form-label">{{ form.price.label }}</label>
                 {{ form.price(class="form-control") }}
             </div>
 
+            <!-- Category Selection Field -->
             <div class="mb-3">
+                <label for="category_id" class="form-label">{{ form.category_id.label }}</label>
+                {{ form.category_id(class="form-control") }}
+            </div>
 
-                {{ form.submit(class="btn btn-primary") }}
+            <!-- Submit Button -->
+            <div class="mb-3">
+                <input type="submit" class="btn btn-primary" value="Update Course">
             </div>
         </form>
         <a href="{{ url_for('course.instructor_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
