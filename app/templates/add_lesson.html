@@ -2,11 +2,29 @@
 
 {% block content %}
 <h2>Add Lesson to Course: {{ course.title }}</h2>
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
-    <p>{{ form.title.label }}<br>{{ form.title }}</p>
-    <p>{{ form.content.label }}<br>{{ form.content }}</p>
-    <p>{{ form.submit }}</p>
+    <div>
+        {{ form.title.label }}<br>
+        {{ form.title(size=32) }}
+    </div>
+    <div>
+        {{ form.content.label }}<br>
+        {{ form.content(rows=5) }}
+    </div>
+    <div>
+        <label for="youtube_link">YouTube Link</label><br>
+        <input type="text" name="youtube_link" id="youtube_link" value="{{ youtube_link or '' }}">
+    </div>
+    <div>
+        {{ form.video_file.label }}<br>
+        {{ form.video_file() }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+    <a href="{{ url_for('course.course_details', course_id=course.id) }}">Back to Course Details</a>
 </form>
+
 <a href="{{ url_for('course.course_details', course_id=course.id) }}">Back to Course Details</a>
 {% endblock %}

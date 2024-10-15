@@ -3,8 +3,12 @@ import logging
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
+from werkzeug.utils import secure_filename
 from wtforms import StringField, TextAreaField, FloatField, SubmitField
 from wtforms.validators import DataRequired
+from flask_wtf.file import FileField, FileAllowed
+
+from app.utils import delete_file_if_exists, save_file, get_embed_url
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -147,7 +151,21 @@ def add_lesson(course_id):
 
     form = LessonForm()
     if form.validate_on_submit():
-        lesson = Lesson(title=form.title.data, content=form.content.data, course_id=course.id)
+        video_path = None
+
+        # Save the video file if uploaded
+        if form.video_file.data:
+            video_filename = secure_filename(form.video_file.data.filename)
+            video_path = f'uploads/{video_filename}'
+            form.video_file.data.save(f'uploads/{video_filename}')
+
+        lesson = Lesson(
+            title=form.title.data,
+            content=form.content.data,
+            youtube_link=form.youtube_link.data,
+            video_path=video_path,
+            course_id=course.id
+        )
         db.session.add(lesson)
         db.session.commit()
         flash('Lesson added successfully!', 'success')
@@ -160,7 +178,9 @@ def add_lesson(course_id):
 class LessonForm(FlaskForm):
     title = StringField('Lesson Title', validators=[DataRequired()])
     content = TextAreaField('Lesson Content', validators=[DataRequired()])
-    submit = SubmitField('Add Lesson')
+    youtube_link = StringField('YouTube Link')  # New YouTube Link field
+    video_file = FileField('Upload Video', validators=[FileAllowed(['mp4', 'mov', 'avi'], 'Video files only!')])  # New File upload field
+    submit = SubmitField('Add/Update Lesson')
 
 
 @bp.route('/<int:course_id>/quizzes', methods=['GET', 'POST'])
@@ -224,11 +244,16 @@ class QuestionForm(FlaskForm):
 def view_lesson(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
     course = lesson.course
+
     # Ensure student is enrolled in the course
-    if current_user.role == 'student' and current_user.id not in [enrollment.student_id for enrollment in
-                                                                  course.enrollments]:
+    if current_user.role == 'student' and current_user.id not in [enrollment.student_id for enrollment in course.enrollments]:
         flash('You must be enrolled in the course to view this lesson.', 'danger')
         return redirect(url_for('course.course_details', course_id=course.id))
+
+    # Convert YouTube link to embed format if necessary
+    if lesson.youtube_link:
+        lesson.youtube_link = get_embed_url(lesson.youtube_link)
+
     return render_template('view_lesson.html', lesson=lesson)
 
 @bp.route('/quiz/<int:quiz_id>', methods=['GET', 'POST'])
@@ -359,22 +384,41 @@ def edit_question(question_id):
     return render_template('edit_question.html', form=form, question=question)
 
 
+
 @bp.route('/lesson/<int:lesson_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_lesson(lesson_id):
+    # Get the lesson object
     lesson = Lesson.query.get_or_404(lesson_id)
     course = lesson.course
 
+    # Verify if the current user is the instructor of the course
     if current_user.role != 'instructor' or course.teacher_id != current_user.id:
-        flash('Only instructors can edit lessons.', 'danger')
-        return redirect(url_for('main.index'))
+        flash('You do not have permission to edit this lesson.', 'danger')
+        return redirect(url_for('course.course_details', course_id=course.id))
 
+    # Create the form and populate it with the current lesson details
     form = LessonForm(obj=lesson)
+
     if form.validate_on_submit():
+        # Update the lesson fields
         lesson.title = form.title.data
         lesson.content = form.content.data
+        lesson.youtube_link = form.youtube_link.data
+
+        # Handle video file upload
+        if form.video_file.data:
+            # Remove existing video if there is a new upload
+            if lesson.video_path:
+                delete_file_if_exists(lesson.video_path)  # Helper function to delete old files
+
+            # Save the new video file
+            video_filename = save_file(form.video_file.data)  # Helper function to save the file
+            lesson.video_path = video_filename
+
+        # Save changes to the database
         db.session.commit()
         flash('Lesson updated successfully!', 'success')
         return redirect(url_for('course.course_details', course_id=course.id))
 
-    return render_template('edit_lesson.html', form=form, lesson=lesson)
+    return render_template('edit_lesson.html', form=form, course=course, lesson=lesson)

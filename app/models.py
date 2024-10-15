@@ -49,6 +49,7 @@ class Course(db.Model):
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     instructor = db.relationship('User', backref='courses', lazy=True)
+    lessons = db.relationship('Lesson', back_populates='course', lazy=True)  # Change backref to back_populates
 
 
 class Enrollment(db.Model):
@@ -88,11 +89,12 @@ class Review(db.Model):
 
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    youtube_link = db.Column(db.String(200))  # Store YouTube link if provided
+    video_path = db.Column(db.String(200))  # Store uploaded video path if provided
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    course = db.relationship('Course', backref='lessons', lazy=True)
+    course = db.relationship('Course', back_populates='lessons')  # Change backref to back_populates
 
 
 class Quiz(db.Model):
