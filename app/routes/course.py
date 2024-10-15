@@ -4,7 +4,10 @@ from app import db
 from app.models import Course, Enrollment
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, FloatField, SubmitField
+from flask_wtf.file import FileAllowed, FileField
 from wtforms.validators import DataRequired
+# from werkzeug.utils import secure_filename
+import os
 
 bp = Blueprint('course', __name__, url_prefix='/courses')
 
@@ -12,6 +15,7 @@ bp = Blueprint('course', __name__, url_prefix='/courses')
 class CourseForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
+    thumbnail = FileField('Thumbnail', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
     price = FloatField('Price', validators=[DataRequired()])
     submit = SubmitField('Create Course')
 
@@ -19,6 +23,16 @@ class CourseForm(FlaskForm):
 def course_details(course_id):
     course = Course.query.get_or_404(course_id)
     return render_template('course_details.html', course=course)
+
+# UPLOAD_FOLDER = 'app/static/uploads/'
+# ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+# def save_thumbnail(file):
+#     """Save the uploaded thumbnail file."""
+#     filename = secure_filename(file.filename)
+#     file_path = os.path.join(UPLOAD_FOLDER, filename)
+#     file.save(file_path)
+#     return file_path
 
 # Route for creating a new course (for instructors only)
 @bp.route('/create', methods=['GET', 'POST'])

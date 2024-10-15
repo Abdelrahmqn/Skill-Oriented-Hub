@@ -43,6 +43,7 @@ class Course(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Float, nullable=False)
+    thumbnail = db.Column(db.String(120), nullable=True)
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     instructor = db.relationship('User', backref='courses', lazy=True)
