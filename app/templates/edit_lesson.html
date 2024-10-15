@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Edit Lesson: {{ lesson.title }}</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.title.label }}<br>
+        {{ form.title() }}
+    </div>
+    <div>
+        {{ form.content.label }}<br>
+        {{ form.content() }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+
+<a href="{{ url_for('course.course_details', course_id=lesson.course.id) }}">Back to Course</a>
+{% endblock %}

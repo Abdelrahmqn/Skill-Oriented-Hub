@@ -8,7 +8,54 @@
 
 {% if current_user.is_authenticated %}
 {% if current_user.role == 'student' %}
+{% if is_enrolled %}
+<h3>Lessons</h3>
+<ul>
+    {% for lesson in course.lessons %}
+    <li><a href="{{ url_for('course.view_lesson', lesson_id=lesson.id) }}">{{ lesson.title }}</a></li>
+    {% endfor %}
+</ul>
+
+<h3>Quizzes</h3>
+<ul>
+    {% for quiz in course.quizzes %}
+    <li>
+        <a href="{{ url_for('course.take_quiz', quiz_id=quiz.id) }}">{{ quiz.title }}</a>
+        {% set attempt = quiz.attempts | selectattr('student_id', 'equalto', current_user.id) | first %}
+        {% if attempt %}
+        - <span style="color: green;">Score: {{ attempt.score }}%</span> (Already Attempted)
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
 <a href="{{ url_for('course.enroll', course_id=course.id) }}">Enroll in this course</a>
+{% endif %}
+{% elif current_user.role == 'instructor' and current_user.id == course.teacher_id %}
+<h3>Manage Course Content</h3>
+<a href="{{ url_for('course.add_lesson', course_id=course.id) }}">Add Lesson</a><br>
+<a href="{{ url_for('course.add_quiz', course_id=course.id) }}">Add Quiz</a>
+
+<h3>Lessons</h3>
+<ul>
+    {% for lesson in course.lessons %}
+    <li>
+        {{ lesson.title }}
+        - <a href="{{ url_for('course.edit_lesson', lesson_id=lesson.id) }}">Edit Lesson</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<h3>Quizzes</h3>
+<ul>
+    {% for quiz in course.quizzes %}
+    <li>
+        {{ quiz.title }}
+        - <a href="{{ url_for('course.add_question', quiz_id=quiz.id) }}">Add Question</a>
+        - <a href="{{ url_for('course.view_questions', quiz_id=quiz.id) }}">View/Edit Questions</a>
+    </li>
+    {% endfor %}
+</ul>
 {% endif %}
 {% endif %}
 

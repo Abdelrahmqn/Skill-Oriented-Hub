@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Add Quiz to Course: {{ course.title }}</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <p>{{ form.title.label }}<br>{{ form.title }}</p>
+    <p>{{ form.submit }}</p>
+</form>
+<a href="{{ url_for('course.course_details', course_id=course.id) }}">Back to Course Details</a>
+{% endblock %}
