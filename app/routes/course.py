@@ -1,37 +1,24 @@
-<<<<<<< HEAD
 import logging
-
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+import os
+import secrets
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
 from werkzeug.utils import secure_filename
-from wtforms import StringField, TextAreaField, FloatField, SubmitField
-=======
-import os
-import secrets
-from PIL import Image
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
-from flask_login import login_required, current_user
-from app import db
-from app.models import Course, Enrollment, Category, Content
-from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, FloatField, SubmitField, IntegerField, SelectField
-from flask_wtf.file import FileField, FileAllowed
->>>>>>> main
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed
+from PIL import Image
 
+from app import db
+from app.models import Course, Enrollment, Category, Content, Lesson, Question, Quiz, QuizAttempt
 from app.utils import delete_file_if_exists, save_file, get_embed_url
 
 logging.basicConfig(level=logging.DEBUG)
 
-from app import db
-from app.models import Course, Enrollment, Lesson, Question, Quiz, QuizAttempt
 
 bp = Blueprint('course', __name__, url_prefix='/courses')
 
-<<<<<<< HEAD
-=======
 class CategoryForm(FlaskForm):
     name = StringField('Category Name', validators=[DataRequired()])
     submit = SubmitField('Add Category')
@@ -58,7 +45,6 @@ def add_category():
 
 
 
->>>>>>> main
 
 # Form for creating a course
 class CourseForm(FlaskForm):
@@ -69,20 +55,6 @@ class CourseForm(FlaskForm):
     category_id = SelectField('Category', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Create Course')
 
-<<<<<<< HEAD
-
-@bp.route('/<int:course_id>', methods=['GET'])
-@login_required
-def course_details(course_id):
-    course = Course.query.get_or_404(course_id)
-    is_enrolled = False
-
-    if current_user.role == 'student':
-        is_enrolled = any(enrollment.student_id == current_user.id for enrollment in course.enrollments)
-
-    return render_template('course_details.html', course=course, is_enrolled=is_enrolled)
-
-=======
     def __init__(self, *args, **kwargs):
         super(CourseForm, self).__init__(*args, **kwargs)
         self.category_id.choices = [(category.id, category.name) for category in Category.query.all()]
@@ -110,7 +82,6 @@ def save_picture(form_picture):
     i.save(picture_path)
 
     return picture_fn
->>>>>>> main
 
 # Route for creating a new course (for instructors only)
 @bp.route('/create', methods=['GET', 'POST'])
@@ -175,11 +146,6 @@ def enroll(course_id):
         db.session.commit()
         flash('You have successfully enrolled in the course!', 'success')
 
-<<<<<<< HEAD
-    return redirect(url_for('course.list_courses'))
-
-
-=======
     return redirect(url_for('course.course_details', course_id=course.id))
 
 
@@ -206,7 +172,6 @@ def unenroll(course_id):
 
     return redirect(url_for('course.course_details', course_id=course.id))
 
->>>>>>> main
 @bp.route('/instructor/dashboard')
 @login_required
 def instructor_dashboard():
@@ -255,7 +220,6 @@ def edit_course(course_id):
     return render_template('edit_course.html', form=form, course=course)
 
 
-<<<<<<< HEAD
 @bp.route('/<int:course_id>/lessons', methods=['GET', 'POST'])
 @login_required
 def add_lesson(course_id):
@@ -541,59 +505,3 @@ def edit_lesson(lesson_id):
         return redirect(url_for('course.course_details', course_id=course.id))
 
     return render_template('edit_lesson.html', form=form, course=course, lesson=lesson)
-=======
-# Route to delete a course
-@bp.route('/delete_course/<int:course_id>', methods=['POST'])
-def delete_course(course_id):
-    # Find the course by its ID
-    course_to_delete = Course.query.get_or_404(course_id)
-
-    # Check if the current user is the instructor (owner of the course)
-    if current_user.id == course_to_delete.teacher_id:
-        try:
-             # delete related enrollments
-            Enrollment.query.filter_by(course_id=course_to_delete.id).delete()
-
-             # Delete the course
-            db.session.delete(course_to_delete)
-            db.session.commit()
-            flash('Course has been deleted successfully!', 'success')
-        except Exception:
-            db.session.rollback()
-            flash('There was an issue deleting the course. Please try again.', 'danger')
-    else:
-        flash('You are not authorized to delete this course.', 'danger')
-
-    return redirect(url_for('course.instructor_dashboard'))
-
-
-class ContentForm(FlaskForm):
-    section_title = StringField('Section Title', validators=[DataRequired()])
-    lesson_title = StringField('Lesson Title', validators=[DataRequired()])
-    lesson_type = SelectField('Lesson Type', choices=[('video', 'Video'), ('text', 'Text'), ('quiz', 'Quiz')], validators=[DataRequired()])
-    lesson_content = TextAreaField('Lesson Content', validators=[DataRequired()])
-    order = IntegerField('Order', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-
-@bp.route('/course/<int:course_id>/content/new', methods=['GET', 'POST'])
-def create_content(course_id):
-    course = Course.query.get_or_404(course_id)
-    form = ContentForm()
-
-    if form.validate_on_submit():
-        new_content = Content(
-            section_title=form.section_title.data,
-            lesson_title=form.lesson_title.data,
-            lesson_type=form.lesson_type.data,
-            lesson_content=form.lesson_content.data,
-            order=form.order.data,
-            course_id=course_id
-        )
-        db.session.add(new_content)
-        db.session.commit()
-        flash('Content added successfully!', 'success')
-        return redirect(url_for('course_details', course_id=course_id))
-
-    return render_template('create_content.html', form=form, course=course)
->>>>>>> main

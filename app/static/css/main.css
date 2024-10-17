@@ -1,6 +1,7 @@
 :root {
     --vert: #7b9b2b;
     --roze: #fc83cd33;
+    --blue: #0b76b488;
 
 }
 
@@ -104,14 +105,24 @@
 }
 
 .btn-primary {
-  background-color: #e746c4be ;
+  background-color: var(--blue) ;
   border: none;
 }
 
 .btn-primary:hover {
-  background-color: var(--vert)!important;
+  background-color: var(--roze)!important;
+  color: var(blue) !important;
 }
-.cta{
 
 
+/* Custom color for the carousel control buttons */
+.custom-prev .carousel-control-prev-icon,
+.custom-next .carousel-control-next-icon {
+  background-color: var(--blue)
+}
+
+/* Optional: Change color on hover */
+.custom-prev:hover .carousel-control-prev-icon,
+.custom-next:hover .carousel-control-next-icon {
+  background-color: var(--roze); 
 }

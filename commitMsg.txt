@@ -1,7 +1,2 @@
-Add course category functionality
-
-- Add category field to the Course model.
-- Add "Add Category" button on the Create Course page.
-- Implement category selection and handling for course updates.
-
+Create a new branch: JawadAdminDashboard
 Related Issues: no

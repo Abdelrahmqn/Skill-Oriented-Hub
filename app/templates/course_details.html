@@ -43,10 +43,8 @@
                     {% if current_user.role == 'instructor' %}
                         <!-- Instructor-specific buttons -->
                         <a href="{{ url_for('course.edit_course', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Edit</a>
-                        <a href="{{ url_for('course.create_content', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Add Content</a>
-                        <form action="{{ url_for('course.delete_course', course_id=course.id) }}" method="POST" class="mt-2">
-                            <button type="submit" class="btn btn-danger btn-sm w-25" onclick="return confirm('Are you sure you want to delete this course and related enrollments ?');">Delete Course</button>
-                        </form>
+
+                       
                     {% endif %}
                 {% endif %}
             </div>
@@ -55,7 +53,6 @@
 </div>
 
 {% if current_user.is_authenticated %}
-<<<<<<< HEAD
 {% if current_user.role == 'student' %}
 {% if is_enrolled %}
 <h3>Lessons</h3>
@@ -109,12 +106,4 @@
 {% endif %}
 
 <a href="{{ url_for('course.list_courses') }}">Back to Courses</a>
-=======
-    {% if current_user.role == 'instructor' %}
-        <a href="{{ url_for('course.instructor_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
-    {% else %}
-        <a href="{{ url_for('course.student_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
-    {% endif %}
-{% endif %}
->>>>>>> main
 {% endblock %}

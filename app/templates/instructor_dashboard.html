@@ -1,7 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<<<<<<< HEAD
 <h2>Instructor Dashboard</h2>
 <h3>My Courses</h3>
 <ul>
@@ -15,11 +14,6 @@
     </li>
     {% endfor %}
 </ul>
-=======
-<div class="h3 bg-info text-white text-center py-1 m-3 rounded shadow-sm">
-    Instructor Dashboard
-</div>
->>>>>>> main
 
 <div class="row">
     {% for course in courses %}
@@ -43,11 +37,7 @@
                         Details</a>
                     <a href="{{ url_for('course.edit_course', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Edit</a>
 
-                    <!-- Delete Button -->
-                    <form action="{{ url_for('course.delete_course', course_id=course.id) }}" method="POST">
-                        <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Are you sure you want to delete this course and related enrollments?');">Delete Course</button>
-                    </form>
+
                 </div>
             </div>
         </div>
