@@ -1,7 +1,4 @@
-Add course category functionality
-
-- Add category field to the Course model.
-- Add "Add Category" button on the Create Course page.
-- Implement category selection and handling for course updates.
-
-Related Issues: no
+Improve Lanfing Page
+- Query the number of active users in the view function that renders the landing page.
+- Pass the active user count to the template.
+- Display the count in the landing page HTML.

@@ -60,7 +60,6 @@
     <p><strong>Instructor:</strong> {{ course.instructor.name }}</p>
 
 {% if current_user.is_authenticated %}
-<<<<<<< HEAD
 {% if current_user.role == 'student' %}
 {% if is_enrolled %}
 <h3>Lessons</h3>
@@ -114,14 +113,12 @@
 {% endif %}
 
 <a href="{{ url_for('course.list_courses') }}">Back to Courses</a>
-=======
     {% if current_user.role == 'instructor' %}
         <a href="{{ url_for('course.instructor_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
     {% else %}
         <a href="{{ url_for('course.student_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
     {% endif %}
 {% endif %}
->>>>>>> main
     {% if current_user.is_authenticated and current_user.role == 'student' %}
         {% if not course.is_enrolled(current_user.id) %}
             <form action="{{ url_for('payment.init_payment', course_id=course.id) }}" method="POST">

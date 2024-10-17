@@ -52,6 +52,7 @@ class Course(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     instructor = db.relationship('User', backref='courses', lazy=True)
     lessons = db.relationship('Lesson', back_populates='course', lazy=True)  # Change backref to back_populates
+
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     category = db.relationship('Category', backref='courses', lazy=True)
     @property
