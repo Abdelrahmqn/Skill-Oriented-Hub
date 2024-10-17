@@ -38,7 +38,7 @@
         transform: translatex(-50%);
         width: 0%;
         height: 2px;
-        background-color: var(--vert);
+        background-color: var(--blue);
         visibility: hidden;
         transition: 0.3s ease-in-out;
     }
@@ -124,5 +124,5 @@
 /* Optional: Change color on hover */
 .custom-prev:hover .carousel-control-prev-icon,
 .custom-next:hover .carousel-control-next-icon {
-  background-color: var(--roze); 
+  background-color: var(--roze);
 }
