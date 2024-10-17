@@ -50,10 +50,7 @@ class Course(db.Model):
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     instructor = db.relationship('User', backref='courses', lazy=True)
-<<<<<<< HEAD
     lessons = db.relationship('Lesson', back_populates='course', lazy=True)  # Change backref to back_populates
-
-=======
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     category = db.relationship('Category', backref='courses', lazy=True)
     @property
@@ -64,7 +61,6 @@ class Course(db.Model):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
->>>>>>> main
 
 class Enrollment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -75,8 +71,6 @@ class Enrollment(db.Model):
     course = db.relationship('Course', backref='enrollments', lazy=True)
 
 
-<<<<<<< HEAD
-=======
 class Content(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
@@ -85,12 +79,9 @@ class Content(db.Model):
     lesson_type = db.Column(db.String(50), nullable=False)  # Type of content (e.g., "video", "text", "quiz")
     lesson_content = db.Column(db.Text, nullable=False)
     order = db.Column(db.Integer, nullable=False)
-
-
     # Relationship to the course
     course = db.relationship('Course', backref='contents', lazy=True)
 
->>>>>>> main
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
