@@ -3,15 +3,33 @@
 {% block content %}
 <h2>Instructor Dashboard</h2>
 <h3>My Courses</h3>
-<ul>
+<div class="row">
     {% for course in courses %}
-    <li>
-        <strong>{{ course.title }}</strong> - {{ course.description }}<br>
-        <a href="{{ url_for('course.course_details', course_id=course.id) }}">View Details</a>
-        <a href="{{ url_for('course.edit_course', course_id=course.id) }}">Edit</a>
-    </li>
-    {% endfor %}
-</ul>
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            {% if course.courseImage %}
+            <img src="{{ url_for('static', filename='img_course/' + course.courseImage) }}" height="350px" class="card-img-top"
+                alt="{{ course.title }}">
+            {% else %}
+            <img src="{{ url_for('static', filename='img_course/default.jpg') }}" class="card-img-top"
+                alt="Course image placeholder">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ course.title }}
+                </h5>
+                <p class="card-text">{{ course.description }}</p>
+                <p class="card-text"><strong>Price:</strong> ${{ course.price }}</p>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('course.course_details', course_id=course.id) }}" class="btn btn-info btn-sm w-25">View
+                        Details</a>
+                    <a href="{{ url_for('course.edit_course', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Edit</a>
 
-<a href="{{ url_for('course.create_course') }}">Create a New Course</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

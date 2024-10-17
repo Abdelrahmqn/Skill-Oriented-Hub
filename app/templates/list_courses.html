@@ -1,22 +1,44 @@
 {% extends "layout.html" %}
 {% block title %}Courses{% endblock %}
 {% block content %}
+
+<div class="h3 bg-info text-white text-center py-1 m-3 rounded shadow-sm">
+    Available Courses
+</div>
+
+<div class="row">
 <h1>Available Courses</h1>
 <div class="row">
     {% for course in courses %}
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <img src="{{ course.thumbnail_url }}" class="card-img-top" alt="{{ course.title }}">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <img src="{{ url_for('static', filename='img_course/' + course.courseImage) }}" height="350px" class="card-img-top" alt="{{ course.title }}">
             <div class="card-body">
-                <h5 class="card-title">{{ course.title }}</h5>
+                <h5 class="card-title">
+                    <a href="{{ url_for('course.course_details', course_id=course.id) }}" class="text-decoration-none">{{ course.title }}</a>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">new </span>
+                </h5>
                 <p class="card-text">{{ course.description }}</p>
-                <p><strong>Price: </strong>${{ course.price }}</p>
-                <form action="{{ url_for('payment.init_payment', course_id=course.id) }}" method="POST">
-                    <button type="submit" class="btn btn-primary">Purchase & Enroll</button>
-                </form>
+                <p class="card-text"><strong>Price:</strong> ${{ course.price }}</p>
+                <p class="card-text"><strong>Instructor:</strong> {{ course.instructor.name }}</p>
+                <p class="card-text"><strong>Total Student:</strong> {{ course.total_students }}</p>
+
+                {% if current_user.is_authenticated %}
+                {% if current_user.role == 'student' %}
+                <div class="d-flex justify-content-center justify-content-evenly flex-grow-1">
+                    <a href="{{ url_for('course.course_details', course_id=course.id) }}" class="btn btn-info btn-sm flex-grow-1">View
+                        Details</a>
+                    <a href="{{ url_for('course.enroll', course_id=course.id) }}" class="btn btn-primary btn-sm flex-grow-1">Enroll</a>
+                </div>
+
+                {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>
+
     {% endfor %}
+</div>
+
 </div>
 {% endblock %}

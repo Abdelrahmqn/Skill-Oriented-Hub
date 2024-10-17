@@ -2,12 +2,84 @@
 
 {% block content %}
 <h2>Create Course</h2>
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
-    <p>{{ form.title.label }}<br>{{ form.title }}</p>
-    <p>{{ form.description.label }}<br>{{ form.description }}</p>
-    <p>{{ form.price.label }}<br>{{ form.price }}</p>
-    <p>{{ form.submit }}</p>
+
+    <!-- Title Field with Error Handling -->
+    <div class="mb-3">
+        <label for="title" class="form-label">{{ form.title.label }}</label>
+        {% if form.title.errors %}
+        {{ form.title(class="form-control is-invalid", id="title") }}
+        <div class="invalid-feedback">
+            {% for error in form.title.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        {{ form.title(class="form-control", id="title") }}
+        {% endif %}
+    </div>
+
+    <!-- Description Field with Error Handling -->
+    <div class="mb-3">
+        <label for="description" class="form-label">{{ form.description.label }}</label>
+        {% if form.description.errors %}
+        {{ form.description(class="form-control is-invalid", id="description", rows=4) }}
+        <div class="invalid-feedback">
+            {% for error in form.description.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        {{ form.description(class="form-control", id="description", rows=4) }}
+        {% endif %}
+    </div>
+
+    <!-- Price Field with Error Handling -->
+    <div class="mb-3">
+        <label for="price" class="form-label">{{ form.price.label }}</label>
+        {% if form.price.errors %}
+        {{ form.price(class="form-control is-invalid", id="price") }}
+        <div class="invalid-feedback">
+            {% for error in form.price.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        {{ form.price(class="form-control", id="price") }}
+        {% endif %}
+    </div>
+
+    <!-- Category Field with Error Handling -->
+    <div class="mb-3">
+        <label for="category_id" class="form-label">{{ form.category_id.label }}</label>
+        <div class="d-flex">
+
+            {% if form.category_id.errors %}
+            {{ form.category_id(class="form-control is-invalid", id="category_id") }}
+            <div class="invalid-feedback">
+                {% for error in form.category_id.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.category_id(class="form-control", id="category_id") }}
+            {% endif %}
+            <a href="{{ url_for('course.add_category') }}" class="btn btn-warning btn-sm w-25 ">Add Catégory</a>
+        </div>
+
+    </div>
+
+    <!-- Course Image Field -->
+    <div class="mb-3">
+        <label for="picture" class="form-label">Course Image (Optional)</label>
+        {{ form.courseImage(class="form-control", id="picture") }}
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mb-3">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
     <!-- <p>{{ form.thumbnail.label }} {{ form.thumbnail }}</p> -->
 </form>
 {% endblock %}

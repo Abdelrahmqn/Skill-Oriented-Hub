@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>Quiz Results: {{ quiz.title }}</h1>
+
+<p>Score: {{ score }}%</p>
+<p>You answered {{ correct_answers }} out of {{ total_questions }} questions correctly.</p>
+
+<ul>
+    {% for result in results %}
+    <li>
+        <strong>{{ result.question }}</strong><br>
+        Your answer: {{ result.your_answer }}<br>
+        Correct answer: {{ result.correct_answer }}<br>
+        {% if result.is_correct %}
+        <span style="color: green;">Correct</span>
+        {% else %}
+        <span style="color: red;">Incorrect</span>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('course.course_details', course_id=quiz.course.id) }}">Back to Course</a>
+{% endblock %}

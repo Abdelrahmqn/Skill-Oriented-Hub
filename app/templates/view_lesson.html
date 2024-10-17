@@ -1,0 +1,16 @@
+<h2>{{ lesson.title }}</h2>
+<p>{{ lesson.content }}</p>
+
+{% if lesson.video_path %}
+<h3>Watch Video:</h3>
+<video controls width="600">
+    <source src="{{ url_for('static', filename='uploads/' + lesson.video_path) }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+{% elif lesson.youtube_link %}
+<h3>Watch Video:</h3>
+<iframe width="600" height="400"
+        src="{{ lesson.youtube_link }}"
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+{% endif %}

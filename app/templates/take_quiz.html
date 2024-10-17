@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>Take Quiz: {{ quiz.title }}</h1>
+
+<form method="POST" action="{{ url_for('course.take_quiz', quiz_id=quiz.id) }}">
+    {{ form.hidden_tag() }}
+
+    <!-- Render the dynamic form fields -->
+    {% for field in form if field.type != 'SubmitField' %}
+    {% if field.name != 'csrf_token' %}
+    <p><strong>{{ field.label }}</strong><br>
+        {{ field() }}</p>
+    {% endif %}
+    {% endfor %}
+
+    <p>{{ form.submit() }}</p>
+</form>
+
+<a href="{{ url_for('course.course_details', course_id=quiz.course.id) }}">Back to Course</a>
+{% endblock %}
