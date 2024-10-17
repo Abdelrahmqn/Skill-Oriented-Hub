@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Edit Question</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.question_text.label }}<br>
+        {{ form.question_text() }}
+    </div>
+    <div>
+        {{ form.answer.label }}<br>
+        {{ form.answer() }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+
+<a href="{{ url_for('course.view_questions', quiz_id=question.quiz.id) }}">Back to Questions</a>
+{% endblock %}

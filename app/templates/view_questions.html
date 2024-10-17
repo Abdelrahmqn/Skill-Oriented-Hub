@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Manage Questions for: {{ quiz.title }}</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.question_text.label }}<br>
+        {{ form.question_text() }}
+    </div>
+    <div>
+        {{ form.answer.label }}<br>
+        {{ form.answer() }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+
+<h3>Existing Questions</h3>
+<ul>
+    {% for question in questions %}
+    <li>
+        <strong>{{ question.question_text }}</strong><br>
+        Answer: {{ question.answer }}<br>
+        <a href="{{ url_for('course.edit_question', question_id=question.id) }}">Edit</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('course.course_details', course_id=quiz.course.id) }}">Back to Course</a>
+{% endblock %}

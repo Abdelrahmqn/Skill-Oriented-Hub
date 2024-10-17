@@ -1,9 +1,25 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<<<<<<< HEAD
+<h2>Instructor Dashboard</h2>
+<h3>My Courses</h3>
+<ul>
+    {% for course in courses %}
+    <li>
+        <strong>{{ course.title }}</strong> - {{ course.description }}<br>
+        <a href="{{ url_for('course.course_details', course_id=course.id) }}">View Details</a>
+        <a href="{{ url_for('course.edit_course', course_id=course.id) }}">Edit</a>
+        <a href="{{ url_for('course.add_lesson', course_id=course.id) }}">Add Lesson</a>
+        <a href="{{ url_for('course.add_quiz', course_id=course.id) }}">Add Quiz</a>
+    </li>
+    {% endfor %}
+</ul>
+=======
 <div class="h3 bg-info text-white text-center py-1 m-3 rounded shadow-sm">
     Instructor Dashboard
 </div>
+>>>>>>> main
 
 <div class="row">
     {% for course in courses %}
