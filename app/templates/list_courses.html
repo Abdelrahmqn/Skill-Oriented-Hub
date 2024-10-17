@@ -36,19 +36,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <img src="{{ course.thumbnail_url }}" class="card-img-top" alt="{{ course.title }}">
-            <div class="card-body">
-                <h5 class="card-title">{{ course.title }}</h5>
-                <p class="card-text">{{ course.description }}</p>
-                <p><strong>Price: </strong>${{ course.price }}</p>
-                <form action="{{ url_for('payment.init_payment', course_id=course.id) }}" method="POST">
-                    <button type="submit" class="btn btn-primary">Purchase & Enroll</button>
-                </form>
-            </div>
-        </div>
-    </div>
+
     {% endfor %}
 </div>
 

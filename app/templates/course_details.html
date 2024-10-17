@@ -8,7 +8,7 @@
     <div class="col-md-4">
         <div class="card mb-4 shadow-sm">
             <img src="{{ url_for('static', filename='img_course/' + course.courseImage) }}" class="card-img-top"
-                alt="{{ course.title }}" style="height: 100%; object-fit: cover;">
+                 alt="{{ course.title }}" style="height: 100%; object-fit: cover;">
         </div>
     </div>
 
@@ -20,48 +20,39 @@
                 <p class="card-text"><strong>Description:</strong> {{ course.description }}</p>
                 <p class="card-text"><strong>Price:</strong> ${{ course.price }}</p>
                 <p class="card-text"><strong>Instructor:</strong> {{ course.instructor.name }}</p>
-                <p class="card-text"><strong>Category :</strong> {{ course.category.name }}</p>
-                <p class="card-text"><strong>Total Student:</strong> {{ course.total_students }}</p>
-
+                <p class="card-text"><strong>Category:</strong> {{ course.category.name }}</p>
+                <p class="card-text"><strong>Total Students:</strong> {{ course.total_students }}</p>
 
                 {% if current_user.is_authenticated %}
-                    {% if current_user.role == 'student' %}
-
-                        {% if enrolled %}
-                            <!-- Show Unenroll button if already enrolled -->
-                            <form action="{{ url_for('course.unenroll', course_id=course.id) }}" method="POST">
-                                <button type="submit" class="btn btn-danger btn-lg mt-3">Unenroll from this course</button>
-                            </form>
-                        {% else %}
-                            <!-- Show Enroll button if not enrolled -->
-                            <form action="{{ url_for('course.enroll', course_id=course.id) }}" method="POST">
-                                <button type="submit" class="btn btn-primary btn-lg mt-3">Enroll in this course</button>
-                            </form>
-                        {% endif %}
-                    {% endif %}
-
-                    {% if current_user.role == 'instructor' %}
-                        <!-- Instructor-specific buttons -->
-                        <a href="{{ url_for('course.edit_course', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Edit</a>
-                        <a href="{{ url_for('course.create_content', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Add Content</a>
-                        <form action="{{ url_for('course.delete_course', course_id=course.id) }}" method="POST" class="mt-2">
-                            <button type="submit" class="btn btn-danger btn-sm w-25" onclick="return confirm('Are you sure you want to delete this course and related enrollments ?');">Delete Course</button>
-                        </form>
-                    {% endif %}
+                {% if current_user.role == 'student' %}
+                {% if enrolled %}
+                <!-- Show Unenroll button if already enrolled -->
+                <form action="{{ url_for('course.unenroll', course_id=course.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger btn-lg mt-3">Unenroll from this course</button>
+                </form>
+                {% else %}
+                <!-- Show Enroll button if not enrolled -->
+                <form action="{{ url_for('course.enroll', course_id=course.id) }}" method="POST">
+                    <button type="submit" class="btn btn-primary btn-lg mt-3">Enroll in this course</button>
+                </form>
+                {% endif %}
+                {% elif current_user.role == 'instructor' %}
+                <!-- Instructor-specific buttons -->
+                <a href="{{ url_for('course.edit_course', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Edit</a>
+                <a href="{{ url_for('course.create_content', course_id=course.id) }}" class="btn btn-warning btn-sm w-25">Add Content</a>
+                <form action="{{ url_for('course.delete_course', course_id=course.id) }}" method="POST" class="mt-2">
+                    <button type="submit" class="btn btn-danger btn-sm w-25" onclick="return confirm('Are you sure you want to delete this course and related enrollments?');">Delete Course</button>
+                </form>
+                {% endif %}
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
-<div class="container mt-5">
-    <h2>{{ course.title }}</h2>
-    <p><strong>Description:</strong> {{ course.description }}</p>
-    <p><strong>Price:</strong> ${{ course.price }}</p>
-    <p><strong>Instructor:</strong> {{ course.instructor.name }}</p>
 
 {% if current_user.is_authenticated %}
-{% if current_user.role == 'student' %}
-{% if is_enrolled %}
+{% if current_user.role == 'student' and enrolled %}
+<!-- Lessons and Quizzes for enrolled students -->
 <h3>Lessons</h3>
 <ul>
     {% for lesson in course.lessons %}
@@ -81,10 +72,8 @@
     </li>
     {% endfor %}
 </ul>
-{% else %}
-<a href="{{ url_for('course.enroll', course_id=course.id) }}">Enroll in this course</a>
-{% endif %}
 {% elif current_user.role == 'instructor' and current_user.id == course.teacher_id %}
+<!-- Manage Course Content for instructors -->
 <h3>Manage Course Content</h3>
 <a href="{{ url_for('course.add_lesson', course_id=course.id) }}">Add Lesson</a><br>
 <a href="{{ url_for('course.add_quiz', course_id=course.id) }}">Add Quiz</a>
@@ -112,24 +101,15 @@
 {% endif %}
 {% endif %}
 
-<a href="{{ url_for('course.list_courses') }}">Back to Courses</a>
+<div class="mt-4">
+    <a href="{{ url_for('course.list_courses') }}" class="btn btn-secondary">Back to Courses</a>
+    {% if current_user.is_authenticated %}
     {% if current_user.role == 'instructor' %}
-        <a href="{{ url_for('course.instructor_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
-    {% else %}
-        <a href="{{ url_for('course.student_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    <a href="{{ url_for('course.instructor_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    {% elif current_user.role == 'student' %}
+    <a href="{{ url_for('course.student_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
     {% endif %}
-{% endif %}
-    {% if current_user.is_authenticated and current_user.role == 'student' %}
-        {% if not course.is_enrolled(current_user.id) %}
-            <form action="{{ url_for('payment.init_payment', course_id=course.id) }}" method="POST">
-                <button type="submit" class="btn btn-warning">Buy Now</button>
-            </form>
-        {% else %}
-            <p class="text-success">You are already enrolled in this course!</p>
-        {% endif %}
-    {% else %}
-        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Log in to Buy</a>
     {% endif %}
-    <a href="{{ url_for('course.list_courses') }}" class="btn btn-secondary mt-3">Back to Courses</a>
 </div>
+
 {% endblock %}

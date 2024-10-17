@@ -1,17 +1,16 @@
 import logging
-import os
 import secrets
+
+from PIL import Image
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from werkzeug.utils import secure_filename
 from wtforms import StringField, TextAreaField, FloatField, SubmitField, IntegerField, SelectField
 from wtforms.validators import DataRequired
-from flask_wtf.file import FileField, FileAllowed
-from PIL import Image
 
-from app import db
-from app.models import Course, Enrollment, Category, Content, Lesson, Question, Quiz, QuizAttempt
+from app.models import Category, Content, Payment
 from app.utils import delete_file_if_exists, save_file, get_embed_url
 
 logging.basicConfig(level=logging.DEBUG)
@@ -23,9 +22,11 @@ import os
 
 bp = Blueprint('course', __name__, url_prefix='/courses')
 
+
 class CategoryForm(FlaskForm):
     name = StringField('Category Name', validators=[DataRequired()])
     submit = SubmitField('Add Category')
+
 
 @bp.route('/add_category', methods=['GET', 'POST'])
 @login_required
@@ -47,18 +48,23 @@ def add_category():
     return render_template('add_category.html', form=form)
 
 
-
-
-
 # Form for creating a course
 class CourseForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     thumbnail = FileField('Thumbnail', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
+    category_id = SelectField('Category', choices=[], coerce=int)  # Add this line
+    courseImage = FileField('Course Image')  # Add this field
     price = FloatField('Price', validators=[DataRequired()])
     submit = SubmitField('Create Course')
 
+    def __init__(self, *args, **kwargs):
+        super(CourseForm, self).__init__(*args, **kwargs)
+        # Populate the category choices with (id, name) tuples from the Category model
+        self.category_id.choices = [(c.id, c.name) for c in Category.query.all()]
 
+
+# Route display course details
 @bp.route('/<int:course_id>', methods=['GET'])
 @login_required
 def course_details(course_id):
@@ -74,14 +80,6 @@ def course_details(course_id):
         super(CourseForm, self).__init__(*args, **kwargs)
         self.category_id.choices = [(category.id, category.name) for category in Category.query.all()]
 
-# Route display course details
-@bp.route('/<int:course_id>')
-def course_details(course_id):
-    course = Course.query.get_or_404(course_id)
-    enrollment = Enrollment.query.filter_by(student_id=current_user.id, course_id=course.id).first()
-    enrolled = enrollment is not None
-
-    return render_template('course_details.html', course=course, enrolled=enrolled )
 
 # Function store image
 def save_picture(form_picture):
@@ -98,27 +96,50 @@ def save_picture(form_picture):
 
     return picture_fn
 
+
 # Route for creating a new course (for instructors only)
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_course():
+    # Check if the current user is an instructor
     if current_user.role != 'instructor':
         flash('Only instructors can create courses.', 'danger')
         return redirect(url_for('main.index'))
 
+    # Instantiate the form
     form = CourseForm()
+
+    # Check if the form has been submitted and is valid
     if form.validate_on_submit():
+        # Ensure that category_id is selected
+        if form.category_id.data is None:
+            flash('Please select a category for the course.', 'danger')
+            return render_template('create_course.html', form=form)
+
+        # Create a new Course instance with form data
         course = Course(
             title=form.title.data,
             description=form.description.data,
             price=form.price.data,
-            teacher_id=current_user.id
+            teacher_id=current_user.id,
+            category_id=form.category_id.data  # Assign category_id from form data
         )
-        db.session.add(course)
-        db.session.commit()
-        flash('Course created successfully!', 'success')
-        return redirect(url_for('course.list_courses'))
 
+        # Assign courseImage if provided (Optional field)
+        if form.courseImage.data:
+            course.courseImage = form.courseImage.data
+
+        # Add the course to the session and commit it to the database
+        try:
+            db.session.add(course)
+            db.session.commit()
+            flash('Course created successfully!', 'success')
+            return redirect(url_for('course.list_courses'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error creating course: {str(e)}', 'danger')
+
+    # Render the form template for GET request or validation errors
     return render_template('create_course.html', form=form)
 
 
@@ -159,7 +180,6 @@ def enroll(course_id):
 
     return redirect(url_for('course.list_courses'))
 
-
     return redirect(url_for('course.course_details', course_id=course.id))
 
 
@@ -183,8 +203,8 @@ def unenroll(course_id):
     else:
         flash('You are not enrolled in this course.', 'warning')
 
-
     return redirect(url_for('course.course_details', course_id=course.id))
+
 
 @bp.route('/instructor/dashboard')
 @login_required
@@ -274,7 +294,8 @@ class LessonForm(FlaskForm):
     title = StringField('Lesson Title', validators=[DataRequired()])
     content = TextAreaField('Lesson Content', validators=[DataRequired()])
     youtube_link = StringField('YouTube Link')  # New YouTube Link field
-    video_file = FileField('Upload Video', validators=[FileAllowed(['mp4', 'mov', 'avi'], 'Video files only!')])  # New File upload field
+    video_file = FileField('Upload Video', validators=[
+        FileAllowed(['mp4', 'mov', 'avi'], 'Video files only!')])  # New File upload field
     submit = SubmitField('Add/Update Lesson')
 
 
@@ -341,7 +362,8 @@ def view_lesson(lesson_id):
     course = lesson.course
 
     # Ensure student is enrolled in the course
-    if current_user.role == 'student' and current_user.id not in [enrollment.student_id for enrollment in course.enrollments]:
+    if current_user.role == 'student' and current_user.id not in [enrollment.student_id for enrollment in
+                                                                  course.enrollments]:
         flash('You must be enrolled in the course to view this lesson.', 'danger')
         return redirect(url_for('course.course_details', course_id=course.id))
 
@@ -351,6 +373,7 @@ def view_lesson(lesson_id):
 
     return render_template('view_lesson.html', lesson=lesson)
 
+
 @bp.route('/quiz/<int:quiz_id>', methods=['GET', 'POST'])
 @login_required
 def take_quiz(quiz_id):
@@ -358,7 +381,8 @@ def take_quiz(quiz_id):
     course = quiz.course
 
     # Ensure student is enrolled in the course
-    if current_user.role == 'student' and current_user.id not in [enrollment.student_id for enrollment in course.enrollments]:
+    if current_user.role == 'student' and current_user.id not in [enrollment.student_id for enrollment in
+                                                                  course.enrollments]:
         flash('You must be enrolled in the course to take this quiz.', 'danger')
         return redirect(url_for('course.course_details', course_id=course.id))
 
@@ -434,6 +458,7 @@ def take_quiz(quiz_id):
     # Render the quiz form for students
     return render_template('take_quiz.html', quiz=quiz, form=form)
 
+
 @bp.route('/quiz/<int:quiz_id>/questions', methods=['GET', 'POST'])
 @login_required
 def view_questions(quiz_id):
@@ -479,7 +504,6 @@ def edit_question(question_id):
     return render_template('edit_question.html', form=form, question=question)
 
 
-
 @bp.route('/lesson/<int:lesson_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_lesson(lesson_id):
@@ -517,7 +541,8 @@ def edit_lesson(lesson_id):
         return redirect(url_for('course.course_details', course_id=course.id))
 
     return render_template('edit_lesson.html', form=form, course=course, lesson=lesson)
-=======
+
+
 # Route to delete a course
 @bp.route('/delete_course/<int:course_id>', methods=['POST'])
 def delete_course(course_id):
@@ -527,10 +552,10 @@ def delete_course(course_id):
     # Check if the current user is the instructor (owner of the course)
     if current_user.id == course_to_delete.teacher_id:
         try:
-             # delete related enrollments
+            # delete related enrollments
             Enrollment.query.filter_by(course_id=course_to_delete.id).delete()
 
-             # Delete the course
+            # Delete the course
             db.session.delete(course_to_delete)
             db.session.commit()
             flash('Course has been deleted successfully!', 'success')
@@ -546,7 +571,8 @@ def delete_course(course_id):
 class ContentForm(FlaskForm):
     section_title = StringField('Section Title', validators=[DataRequired()])
     lesson_title = StringField('Lesson Title', validators=[DataRequired()])
-    lesson_type = SelectField('Lesson Type', choices=[('video', 'Video'), ('text', 'Text'), ('quiz', 'Quiz')], validators=[DataRequired()])
+    lesson_type = SelectField('Lesson Type', choices=[('video', 'Video'), ('text', 'Text'), ('quiz', 'Quiz')],
+                              validators=[DataRequired()])
     lesson_content = TextAreaField('Lesson Content', validators=[DataRequired()])
     order = IntegerField('Order', validators=[DataRequired()])
     submit = SubmitField('Submit')
@@ -569,7 +595,8 @@ def create_content(course_id):
         db.session.add(new_content)
         db.session.commit()
         flash('Content added successfully!', 'success')
-        return redirect(url_for('course_details', course_id=course_id))
+        # Corrected the endpoint name to include the blueprint's name
+        return redirect(url_for('course.course_details', course_id=course_id))
 
     return render_template('create_content.html', form=form, course=course)
->>>>>>> main
+
