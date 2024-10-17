@@ -1,16 +1,23 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h2>{{ course.title }}</h2>
-<p><strong>Description:</strong> {{ course.description }}</p>
-<p><strong>Price:</strong> ${{ course.price }}</p>
-<p><strong>Instructor:</strong> {{ course.instructor.name }}</p>
+<div class="container mt-5">
+    <h2>{{ course.title }}</h2>
+    <p><strong>Description:</strong> {{ course.description }}</p>
+    <p><strong>Price:</strong> ${{ course.price }}</p>
+    <p><strong>Instructor:</strong> {{ course.instructor.name }}</p>
 
-{% if current_user.is_authenticated %}
-{% if current_user.role == 'student' %}
-<a href="{{ url_for('course.enroll', course_id=course.id) }}">Enroll in this course</a>
-{% endif %}
-{% endif %}
-
-<a href="{{ url_for('course.list_courses') }}">Back to Courses</a>
+    {% if current_user.is_authenticated and current_user.role == 'student' %}
+        {% if not course.is_enrolled(current_user.id) %}
+            <form action="{{ url_for('payment.init_payment', course_id=course.id) }}" method="POST">
+                <button type="submit" class="btn btn-warning">Buy Now</button>
+            </form>
+        {% else %}
+            <p class="text-success">You are already enrolled in this course!</p>
+        {% endif %}
+    {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Log in to Buy</a>
+    {% endif %}
+    <a href="{{ url_for('course.list_courses') }}" class="btn btn-secondary mt-3">Back to Courses</a>
+</div>
 {% endblock %}

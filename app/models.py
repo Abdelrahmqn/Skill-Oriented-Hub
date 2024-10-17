@@ -47,6 +47,11 @@ class Course(db.Model):
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     instructor = db.relationship('User', backref='courses', lazy=True)
+    
+    def is_enrolled(self, user_id):
+        """is enrolled?
+        """
+        return Enrollment.query.filter_by(course_id=self.id, student_id=user_id).count() > 0
 
 class Enrollment(db.Model):
     id = db.Column(db.Integer, primary_key=True)

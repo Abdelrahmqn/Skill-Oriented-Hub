@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from app import db
-from app.models import Course, Enrollment
+from app.models import Course, Enrollment, Payment
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, FloatField, SubmitField
 from flask_wtf.file import FileAllowed, FileField
@@ -24,17 +24,6 @@ def course_details(course_id):
     course = Course.query.get_or_404(course_id)
     return render_template('course_details.html', course=course)
 
-# UPLOAD_FOLDER = 'app/static/uploads/'
-# ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
-# def save_thumbnail(file):
-#     """Save the uploaded thumbnail file."""
-#     filename = secure_filename(file.filename)
-#     file_path = os.path.join(UPLOAD_FOLDER, filename)
-#     file.save(file_path)
-#     return file_path
-
-# Route for creating a new course (for instructors only)
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_course():
@@ -64,11 +53,20 @@ def list_courses():
     return render_template('list_courses.html', courses=courses)
 
 # Route for enrolling in a course (for students)
-@bp.route('/enroll/<int:course_id>')
+@bp.route('/enroll/<int:course_id>', methods=['POST'])
 @login_required
 def enroll(course_id):
     if current_user.role != 'student':
         flash('Only students can enroll in courses.', 'danger')
+        return redirect(url_for('course.list_courses'))
+
+    # Fetch user and course from the request form
+    user_id = request.form.get('user_id')
+    course_id = request.form.get('course_id')
+
+    purchased = Payment.query.filter_by(user_id=user_id, course_id=course_id).first()
+    if not purchased:
+        flash('You need to purchase this course first.', 'warning')
         return redirect(url_for('course.list_courses'))
 
     course = Course.query.get_or_404(course_id)
@@ -83,6 +81,7 @@ def enroll(course_id):
         flash('You have successfully enrolled in the course!', 'success')
 
     return redirect(url_for('course.list_courses'))
+
 @bp.route('/instructor/dashboard')
 @login_required
 def instructor_dashboard():
