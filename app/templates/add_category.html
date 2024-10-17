@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Add Category</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <!-- Name Field with Error Handling -->
+    <div class="mb-3">
+        <label for="name" class="form-label">{{ form.name.label }}</label>
+        {% if form.name.errors %}
+        {{ form.name(class="form-control is-invalid", id="name") }}
+        <div class="invalid-feedback">
+            {% for error in form.name.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        {{ form.name(class="form-control", id="name") }}
+        {% endif %}
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mb-3">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

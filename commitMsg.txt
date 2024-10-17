@@ -1,15 +1,7 @@
-"Improve Course Management design
+Add course category functionality
 
-## Details
-- Add image to the Course model.
-- Improve routes for CRUD operations on courses.
-- Enhance instructor and student dashboard.
-- Handle course enrollment and un-enrollment logic.
-- Display the number of students enrolled in a course.
-- Add badge for new courses displayed at the top.
+- Add category field to the Course model.
+- Add "Add Category" button on the Create Course page.
+- Implement category selection and handling for course updates.
 
-## Related Issues
-
-## Changes Made
-- Updated course management to handle enrollment, un-enrollment, and display of student count.
-- Added a badge to highlight new courses."
+Related Issues: no
