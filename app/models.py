@@ -47,6 +47,7 @@ class Course(db.Model):
     description = db.Column(db.Text, nullable=False)
     courseImage =db.Column(db.String(50), nullable=False, default='default.jpg')
     price = db.Column(db.Float, nullable=False)
+    thumbnail = db.Column(db.String(120), nullable=True)
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     instructor = db.relationship('User', backref='courses', lazy=True)

@@ -1,11 +1,13 @@
-{% extends 'layout.html' %}
-
+{% extends "layout.html" %}
+{% block title %}Courses{% endblock %}
 {% block content %}
 
 <div class="h3 bg-info text-white text-center py-1 m-3 rounded shadow-sm">
     Available Courses
 </div>
 
+<div class="row">
+<h1>Available Courses</h1>
 <div class="row">
     {% for course in courses %}
     <div class="col-md-4 mb-4">
@@ -34,7 +36,21 @@
             </div>
         </div>
     </div>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <img src="{{ course.thumbnail_url }}" class="card-img-top" alt="{{ course.title }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ course.title }}</h5>
+                <p class="card-text">{{ course.description }}</p>
+                <p><strong>Price: </strong>${{ course.price }}</p>
+                <form action="{{ url_for('payment.init_payment', course_id=course.id) }}" method="POST">
+                    <button type="submit" class="btn btn-primary">Purchase & Enroll</button>
+                </form>
+            </div>
+        </div>
+    </div>
     {% endfor %}
 </div>
 
+</div>
 {% endblock %}

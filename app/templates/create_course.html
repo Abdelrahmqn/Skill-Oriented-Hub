@@ -80,5 +80,10 @@
     <div class="mb-3">
         {{ form.submit(class="btn btn-primary") }}
     </div>
+    <p>{{ form.title.label }}<br>{{ form.title }}</p>
+    <p>{{ form.description.label }}<br>{{ form.description }}</p>
+    <p>{{ form.price.label }}<br>{{ form.price }}</p>
+    <p>{{ form.submit }}</p>
+    <!-- <p>{{ form.thumbnail.label }} {{ form.thumbnail }}</p> -->
 </form>
 {% endblock %}

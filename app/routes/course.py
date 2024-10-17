@@ -2,9 +2,12 @@ import logging
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
+from app import db
+from app.models import Course, Enrollment, Payment
 from flask_wtf import FlaskForm
 from werkzeug.utils import secure_filename
 from wtforms import StringField, TextAreaField, FloatField, SubmitField
+from flask_wtf.file import FileAllowed, FileField
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed
 
@@ -14,6 +17,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 from app import db
 from app.models import Course, Enrollment, Lesson, Question, Quiz, QuizAttempt
+# from werkzeug.utils import secure_filename
+import os
 
 bp = Blueprint('course', __name__, url_prefix='/courses')
 
@@ -22,6 +27,7 @@ bp = Blueprint('course', __name__, url_prefix='/courses')
 class CourseForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
+    thumbnail = FileField('Thumbnail', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
     price = FloatField('Price', validators=[DataRequired()])
     submit = SubmitField('Create Course')
 
@@ -38,7 +44,6 @@ def course_details(course_id):
     return render_template('course_details.html', course=course, is_enrolled=is_enrolled)
 
 
-# Route for creating a new course (for instructors only)
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_course():
@@ -70,11 +75,20 @@ def list_courses():
 
 
 # Route for enrolling in a course (for students)
-@bp.route('/enroll/<int:course_id>')
+@bp.route('/enroll/<int:course_id>', methods=['POST'])
 @login_required
 def enroll(course_id):
     if current_user.role != 'student':
         flash('Only students can enroll in courses.', 'danger')
+        return redirect(url_for('course.list_courses'))
+
+    # Fetch user and course from the request form
+    user_id = request.form.get('user_id')
+    course_id = request.form.get('course_id')
+
+    purchased = Payment.query.filter_by(user_id=user_id, course_id=course_id).first()
+    if not purchased:
+        flash('You need to purchase this course first.', 'warning')
         return redirect(url_for('course.list_courses'))
 
     course = Course.query.get_or_404(course_id)
@@ -89,6 +103,7 @@ def enroll(course_id):
         flash('You have successfully enrolled in the course!', 'success')
 
     return redirect(url_for('course.list_courses'))
+
 
 
 @bp.route('/instructor/dashboard')
