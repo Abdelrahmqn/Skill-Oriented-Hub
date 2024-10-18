@@ -1,112 +1,122 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<!-- Modal for Registration -->
-<div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header p-5 pb-4 border-bottom-0">
-        <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
-      </div>
+<div class="row">
 
-      <div class="modal-body p-5 pt-0">
-        <!-- Flask-WTF Form inside Modal -->
-        <form method="POST" class>
-          {{ form.hidden_tag() }}
+  <div class="col-md-6 d-md-flex d-none align-items-center justify-content-center">
+    <img src="{{url_for('static',filename='img/register.png')}}" alt="Registration Image" class="img-fluid">
+  </div>
 
-          <!-- Name Field with Validation in Modal -->
-          <div class="form-floating mb-2">
-            {% if form.name.errors %}
-            {{ form.name(class="form-control rounded-3 is-invalid") }}
-            <label for="floatingName">{{ form.name.label.text }}</label>
-            <div class="invalid-feedback">
-              {% for error in form.name.errors %}
-              <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-            {% else %}
-            {{ form.name(class="form-control rounded-3") }}
-            <label for="floatingName">{{ form.name.label.text }}</label>
-            {% endif %}
+  <div class="col-md-6 ">
+    <!-- Modal for Registration -->
+    <div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content rounded-4 shadow">
+          <div class="modal-header p-5 pb-4 border-bottom-0">
+            <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
           </div>
 
-          <!-- Email Field with Validation in Modal -->
-          <div class="form-floating mb-3">
-            {% if form.email.errors %}
-            {{ form.email(class="form-control rounded-3 is-invalid") }}
-            <label for="floatingEmail">{{ form.email.label.text }}</label>
-            <div class="invalid-feedback">
-              {% for error in form.email.errors %}
-              <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-            {% else %}
-            {{ form.email(class="form-control rounded-3") }}
-            <label for="floatingEmail">{{ form.email.label.text }}</label>
-            {% endif %}
+          <div class="modal-body p-5 pt-0">
+            <!-- Flask-WTF Form inside Modal -->
+            <form method="POST" class>
+              {{ form.hidden_tag() }}
+
+              <!-- Name Field with Validation in Modal -->
+              <div class="form-floating mb-2">
+                {% if form.name.errors %}
+                {{ form.name(class="form-control rounded-3 is-invalid") }}
+                <label for="floatingName">{{ form.name.label.text }}</label>
+                <div class="invalid-feedback">
+                  {% for error in form.name.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %}
+                {{ form.name(class="form-control rounded-3") }}
+                <label for="floatingName">{{ form.name.label.text }}</label>
+                {% endif %}
+              </div>
+
+              <!-- Email Field with Validation in Modal -->
+              <div class="form-floating mb-3">
+                {% if form.email.errors %}
+                {{ form.email(class="form-control rounded-3 is-invalid") }}
+                <label for="floatingEmail">{{ form.email.label.text }}</label>
+                <div class="invalid-feedback">
+                  {% for error in form.email.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email(class="form-control rounded-3") }}
+                <label for="floatingEmail">{{ form.email.label.text }}</label>
+                {% endif %}
+              </div>
+
+              <!-- Role Field (Read-Only or Editable based on use-case) in Modal -->
+              <div class="form-group my-4">
+                {{ form.role.label(class="form-control-label") }} <br>
+                {% for subfield in form.role %}
+                <label class="form-check">
+                  {{ subfield(class="form-check-input") }} {{ subfield.label }}
+                </label>
+                {% endfor %}
+              </div>
+
+              <!-- Password Field in Modal -->
+              <div class="form-floating mb-3">
+                {% if form.password.errors %}
+                {{ form.password(class="form-control rounded-3 is-invalid") }}
+                <label for="floatingPassword">{{ form.password.label.text }}</label>
+                <div class="invalid-feedback">
+                  {% for error in form.password.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %}
+                {{ form.password(class="form-control rounded-3") }}
+                <label for="floatingPassword">{{ form.password.label.text }}</label>
+                {% endif %}
+              </div>
+
+              <!-- Confirm Password Field in Modal -->
+              <div class="form-floating mb-3">
+                {% if form.confirm_password.errors %}
+                {{ form.confirm_password(class="form-control rounded-3 is-invalid")
+                }}
+                <label for="floatingConfirmPassword">{{
+                  form.confirm_password.label.text }}</label>
+                <div class="invalid-feedback">
+                  {% for error in form.confirm_password.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %}
+                {{ form.confirm_password(class="form-control rounded-3") }}
+                <label for="floatingConfirmPassword">{{
+                  form.confirm_password.label.text }}</label>
+                {% endif %}
+              </div>
+
+              <!-- Submit Button -->
+              <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
+                Sign up
+              </button>
+
+              <small class="text-body-secondary">
+                By clicking Sign up, you agree to the terms of use.
+              </small>
+              <div class="border-top py-2 mt-4">
+
+              </div>
+            </form>
           </div>
-
-          <!-- Role Field (Read-Only or Editable based on use-case) in Modal -->
-          <div class="form-group my-4">
-            {{ form.role.label(class="form-control-label") }} <br>
-            {% for subfield in form.role %}
-            <label class="form-check">
-              {{ subfield(class="form-check-input") }} {{ subfield.label }}
-            </label>
-            {% endfor %}
-          </div>
-
-          <!-- Password Field in Modal -->
-          <div class="form-floating mb-3">
-            {% if form.password.errors %}
-            {{ form.password(class="form-control rounded-3 is-invalid") }}
-            <label for="floatingPassword">{{ form.password.label.text }}</label>
-            <div class="invalid-feedback">
-              {% for error in form.password.errors %}
-              <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-            {% else %}
-            {{ form.password(class="form-control rounded-3") }}
-            <label for="floatingPassword">{{ form.password.label.text }}</label>
-            {% endif %}
-          </div>
-
-          <!-- Confirm Password Field in Modal -->
-          <div class="form-floating mb-3">
-            {% if form.confirm_password.errors %}
-            {{ form.confirm_password(class="form-control rounded-3 is-invalid")
-            }}
-            <label for="floatingConfirmPassword">{{
-              form.confirm_password.label.text }}</label>
-            <div class="invalid-feedback">
-              {% for error in form.confirm_password.errors %}
-              <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-            {% else %}
-            {{ form.confirm_password(class="form-control rounded-3") }}
-            <label for="floatingConfirmPassword">{{
-              form.confirm_password.label.text }}</label>
-            {% endif %}
-          </div>
-
-          <!-- Submit Button -->
-          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
-            Sign up
-          </button>
-
-          <small class="text-body-secondary">
-            By clicking Sign up, you agree to the terms of use.
-          </small>
-          <div class="border-top py-2 mt-4">
-
-          </div>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-</div>
 
+  </div>
+
+
+</div>
 {% endblock %}

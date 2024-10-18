@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container my-4">
+  <h1 class="text-center mb-4">Admin Dashboard</h1>
+
+  <!-- User and Financial Statistics Row -->
+  <div class="row">
+    <!-- Students Card -->
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm border-primary">
+        <div class="card-body text-center">
+          <div class="display-4 text-primary">{{ nb_students }}</div>
+          <p class="card-title mt-3">Students</p>
+        </div>
+      </div>
+    </div>
+    <!-- Instructors Card -->
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm border-secondary">
+        <div class="card-body text-center">
+          <div class="display-4 text-secondary">{{ nb_instructors }}</div>
+          <p class="card-title mt-3">Instructors</p>
+        </div>
+      </div>
+    </div>
+    <!-- Total Revenue Card -->
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm border-success">
+        <div class="card-body text-center">
+          <div class="display-4 text-success">${{ total_revenue }}</div>
+          <p class="card-title mt-3">Total Revenue</p>
+        </div>
+      </div>
+    </div>
+    <!-- Pending Payments Card -->
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm border-warning">
+        <div class="card-body text-center">
+          <div class="display-4 text-warning">{{ pending_payments }} ??</div>
+          <p class="card-title mt-3">Pending Payments</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Most Popular Courses Section -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title mb-4">Most Popular Courses</h3>
+          <ul class="list-group list-group-flush">
+            {% for course, enrollment_count in popular_courses %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>{{ course.title }}</strong>
+              <span class="badge bg-primary rounded-pill">{{ enrollment_count }} enrollments</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,33 +1,41 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h2>Manage Questions for: {{ quiz.title }}</h2>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Manage Questions for: {{ quiz.title }}</h2>
 
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <div>
-        {{ form.question_text.label }}<br>
-        {{ form.question_text() }}
-    </div>
-    <div>
-        {{ form.answer.label }}<br>
-        {{ form.answer() }}
-    </div>
-    <div>
-        {{ form.submit() }}
-    </div>
-</form>
+    <!-- Question Form -->
+    <form method="POST">
+        {{ form.hidden_tag() }}
 
-<h3>Existing Questions</h3>
-<ul>
-    {% for question in questions %}
-    <li>
-        <strong>{{ question.question_text }}</strong><br>
-        Answer: {{ question.answer }}<br>
-        <a href="{{ url_for('course.edit_question', question_id=question.id) }}">Edit</a>
-    </li>
-    {% endfor %}
-</ul>
+        <div class="mb-3">
+            <label for="question_text" class="form-label">{{ form.question_text.label }}</label>
+            {{ form.question_text(class="form-control") }}
+        </div>
 
-<a href="{{ url_for('course.course_details', course_id=quiz.course.id) }}">Back to Course</a>
+        <div class="mb-3">
+            <label for="answer" class="form-label">{{ form.answer.label }}</label>
+            {{ form.answer(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+
+    <!-- Existing Questions -->
+    <h3 class="mt-5">Existing Questions</h3>
+    <ul class="list-group">
+        {% for question in questions %}
+        <li class="list-group-item">
+            <strong>{{ question.question_text }}</strong><br>
+            <small>Answer: {{ question.answer }}</small><br>
+            <a href="{{ url_for('course.edit_question', question_id=question.id) }}" class="btn btn-warning btn-sm mt-2">Edit</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Back to Course Button -->
+    <a href="{{ url_for('course.course_details', course_id=quiz.course.id) }}" class="btn btn-secondary mt-4">Back to Course</a>
+</div>
 {% endblock %}

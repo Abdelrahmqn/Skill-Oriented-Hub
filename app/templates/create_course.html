@@ -73,7 +73,19 @@
     <!-- Course Image Field -->
     <div class="mb-3">
         <label for="picture" class="form-label">Course Image (Optional)</label>
+
+
+        {% if form.courseImage.errors %}
+        {{ form.courseImage(class="form-control is-invalid", id="picture") }}
+        <div class="invalid-feedback">
+            {% for error in form.courseImage.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
         {{ form.courseImage(class="form-control", id="picture") }}
+        {% endif %}
+
     </div>
 
     <!-- Submit Button -->

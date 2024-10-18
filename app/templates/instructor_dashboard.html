@@ -3,18 +3,6 @@
 {% block content %}
 <h2>Instructor Dashboard</h2>
 <h3>My Courses</h3>
-<ul>
-    {% for course in courses %}
-    <li>
-        <strong>{{ course.title }}</strong> - {{ course.description }}<br>
-        <a href="{{ url_for('course.course_details', course_id=course.id) }}">View Details</a>
-        <a href="{{ url_for('course.edit_course', course_id=course.id) }}">Edit</a>
-        <a href="{{ url_for('course.add_lesson', course_id=course.id) }}">Add Lesson</a>
-        <a href="{{ url_for('course.add_quiz', course_id=course.id) }}">Add Quiz</a>
-    </li>
-    {% endfor %}
-</ul>
-
 <div class="row">
     {% for course in courses %}
     <div class="col-md-4 mb-4">

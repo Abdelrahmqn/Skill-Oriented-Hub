@@ -1,27 +1,39 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1 class="mt-4">Update Account</h1>
+<div class="container">
+    <h1 class="mt-4 mb-4">Update Account</h1>
+
     <form method="POST" action="">
         {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.name.label(class="form-control-label") }}
-            {{ form.name(class="form-control form-control-lg") }}
-        </div>
-        <div class="form-group">
-            {{ form.email.label(class="form-control-label") }}
-            {% if form.email.errors %}
-              {{ form.email(class="form-control form-control-lg is-invalid") }}
-              <div class="invalid-feedback">
-                  {% for error in form.email.errors %}
-                      <span>{{ error }}</span>
-                  {% endfor %}
-              </div>
-        {% else %}
-            {{ form.email(class="form-control form-control-lg") }}
-        {% endif %}
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control form-control-lg") }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ form.email.label(class="form-label") }}
+                    {% if form.email.errors %}
+                        {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-outline-success">Update</button>
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-outline-success btn-lg w-100">Update Account</button>
+        </div>
     </form>
+</div>
 {% endblock content %}

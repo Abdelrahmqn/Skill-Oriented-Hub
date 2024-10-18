@@ -1,25 +1,27 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h1>Quiz Results: {{ quiz.title }}</h1>
+<div class="container my-5">
+    <h1 class="mb-4">Quiz Results: {{ quiz.title }}</h1>
 
-<p>Score: {{ score }}%</p>
-<p>You answered {{ correct_answers }} out of {{ total_questions }} questions correctly.</p>
+    <p class="lead">Score: <strong>{{ score }}%</strong></p>
+    <p>You answered <strong>{{ correct_answers }}</strong> out of <strong>{{ total_questions }}</strong> questions correctly.</p>
 
-<ul>
-    {% for result in results %}
-    <li>
-        <strong>{{ result.question }}</strong><br>
-        Your answer: {{ result.your_answer }}<br>
-        Correct answer: {{ result.correct_answer }}<br>
-        {% if result.is_correct %}
-        <span style="color: green;">Correct</span>
-        {% else %}
-        <span style="color: red;">Incorrect</span>
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
+    <ul class="list-group mb-4">
+        {% for result in results %}
+        <li class="list-group-item">
+            <strong>{{ result.question }}</strong>
+            <p>Your answer: {{ result.your_answer }}</p>
+            <p>Correct answer: {{ result.correct_answer }}</p>
+            {% if result.is_correct %}
+            <span class="text-success">Correct</span>
+            {% else %}
+            <span class="text-danger">Incorrect</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
 
-<a href="{{ url_for('course.course_details', course_id=quiz.course.id) }}">Back to Course</a>
+    <a href="{{ url_for('course.course_details', course_id=quiz.course.id) }}" class="btn btn-secondary">Back to Course</a>
+</div>
 {% endblock %}
