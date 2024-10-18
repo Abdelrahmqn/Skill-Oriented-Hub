@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
 class Config:
     # Basic Flask Configuration
     SECRET_KEY = os.getenv('SECRET_KEY', 'mysecretkey')
