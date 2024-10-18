@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="alert alert-info" role="alert">
+  Course purchase is currently unavailable. Please contact support for more information.
+</div>
+<a href="{{ url_for('course.list_courses') }}" class="btn btn-primary">Back to Courses</a>
+{% endblock %}

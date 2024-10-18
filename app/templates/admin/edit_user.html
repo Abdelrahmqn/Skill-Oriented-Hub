@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Edit User</h1>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            {{ form.name(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+
+    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-secondary">Back to Users</a>
+</div>
+{% endblock %}

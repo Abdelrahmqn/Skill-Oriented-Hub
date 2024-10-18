@@ -1,11 +1,29 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h2>Add Quiz to Course: {{ course.title }}</h2>
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <p>{{ form.title.label }}<br>{{ form.title }}</p>
-    <p>{{ form.submit }}</p>
-</form>
-<a href="{{ url_for('course.course_details', course_id=course.id) }}">Back to Course Details</a>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Add Quiz to Course: {{ course.title }}</h2>
+
+    <form method="POST" class="shadow p-4 bg-light rounded">
+        {{ form.hidden_tag() }}
+
+        <!-- Quiz Title -->
+        <div class="form-group mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control", placeholder="Enter quiz title") }}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-grid gap-2">
+            {{ form.submit(class="btn btn-primary btn-lg") }}
+        </div>
+    </form>
+
+    <!-- Back to Course Details Button -->
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('course.course_details', course_id=course.id) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back to Course Details
+        </a>
+    </div>
+</div>
 {% endblock %}

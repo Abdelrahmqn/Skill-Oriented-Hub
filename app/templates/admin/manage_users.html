@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container my-4">
+  <h1 class="text-center mb-4">Manage Users</h1>
+
+  <!-- Search Bar -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" id="userSearch" class="form-control" placeholder="Search for users...">
+    </div>
+    <div class="col-md-6">
+      <a href="{{ url_for('admin.add_user')}}" class="btn btn-primary btn-md">Add User</a>
+    </div>
+  </div>
+
+
+
+
+
+
+  <!-- Users Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userTable">
+        {% for user in users %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role.capitalize() }}</td>
+          <td>
+            <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-primary btn-sm">Edit</a>
+
+            <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- JavaScript for Search Filtering -->
+<script>
+  document.getElementById('userSearch').addEventListener('keyup', function () {
+    let searchValue = this.value.toLowerCase();
+    let tableRows = document.querySelectorAll('#userTable tr');
+
+    tableRows.forEach(row => {
+      let name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+      let email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+      if (name.includes(searchValue) || email.includes(searchValue)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+</script>
+{% endblock %}

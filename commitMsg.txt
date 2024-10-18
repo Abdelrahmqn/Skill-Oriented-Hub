@@ -1,4 +1,7 @@
-Improve Lanfing Page
-- Query the number of active users in the view function that renders the landing page.
-- Pass the active user count to the template.
-- Display the count in the landing page HTML.
+Enhanced quiz and lesson management pages with Bootstrap styling
+
+- Styled the "Add Quiz to Course" form with Bootstrap components.
+- Improved design for the "Take Quiz" page, including dynamic form field rendering.
+- Updated the "Lesson Details" page to better display videos and content.
+- Enhanced the "Manage Questions" page for quizzes with Bootstrap layout, form styling, and improved question list display.
+- Added responsive design improvements for a cleaner, user-friendly interface.
