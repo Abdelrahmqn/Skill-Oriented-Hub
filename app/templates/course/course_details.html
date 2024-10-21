@@ -1,0 +1,135 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Course Title -->
+    <h2 class="text-center mb-4">{{ course.title }}</h2>
+
+    <div class="row g-4">
+        <!-- Left column for the image -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <img src="{{ url_for('static', filename='img_course/' + course.courseImage) }}" class="card-img-top"
+                    alt="{{ course.title }}">
+            </div>
+        </div>
+
+        <!-- Right column for course details, lessons, and quizzes -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <!-- Course Information -->
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text"><strong>Description:</strong> {{ course.description }}</p>
+                    <p class="card-text"><strong>Price:</strong> ${{ course.price }}</p>
+                    <p class="card-text"><strong>Instructor:</strong> {{ course.instructor.name }}</p>
+                    <p class="card-text"><strong>Category:</strong> {{ course.category.name }}</p>
+                    <p class="card-text"><strong>Total Students:</strong> {{ course.total_students }}</p>
+
+                    <!-- Buttons for Students and Instructors -->
+                    <div class="d-flex gap-3 flex-wrap mt-4">
+                        {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'student' %}
+                        {% if enrolled %}
+                        <!-- Unenroll button if enrolled -->
+                        <form action="{{ url_for('course.unenroll', course_id=course.id) }}" method="POST">
+                            <button type="submit" class="btn btn-danger btn-lg"><i class="bi bi-x-circle"></i>
+                                Unenroll</button>
+                        </form>
+
+                        <!-- Back to Courses button -->
+                        <a href="{{ url_for('course.course_progress', course_id=course.id) }}"
+                            class="btn btn-outline-primary btn-lg">
+                            Resume
+                        </a>
+                        {% else %}
+                        <!-- Enroll button if not enrolled -->
+                        <form action="{{ url_for('course.enroll', course_id=course.id) }}" method="POST">
+                            <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-person-plus-fill"></i>
+                                Enroll</button>
+                        </form>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if current_user.role == 'instructor' %}
+                        <!-- Instructor-specific buttons -->
+                        <a href="{{ url_for('course.edit_course', course_id=course.id) }}"
+                            class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit"></i>Edit
+                        </a>
+
+                        <a href="{{ url_for('course.add_lesson', course_id=course.id) }}"
+                            class="btn btn-outline-success btn-lg">
+                            <i class="fas fa-plus-circle"></i> Add Lesson
+                        </a>
+                        <a href="{{ url_for('course.add_quiz', course_id=course.id) }}"
+                            class="btn btn-outline-success btn-lg"> <i class="fas fa-plus-circle"></i>Add Quiz</a>
+                        {% endif %}
+                        {% endif %}
+
+                        <!-- Back to Courses button -->
+                        <a href="{{ url_for('course.list_courses') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fa fa-long-arrow-left"></i> Back to Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Instructor-specific content for managing lessons and quizzes -->
+    {% if current_user.role == 'instructor' and current_user.id == course.teacher_id %}
+    <div class="mt-5">
+        <h3 class="mb-4">Manage Course Content</h3>
+
+        <!-- Lessons Management Section -->
+        <div class="mb-5">
+            <h4 class="mb-3">Lessons</h4>
+            <ul class="list-group shadow-sm">
+                {% for lesson in course.lessons %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ lesson.title }}</span>
+                    <a href="{{ url_for('course.edit_lesson', lesson_id=lesson.id) }}"
+                        class="btn btn-md btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="Edit Lesson">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Quizzes Management Section -->
+        <div>
+            <h4 class="mb-3">Quizzes</h4>
+            <ul class="list-group shadow-sm">
+                {% for quiz in course.quizzes %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ quiz.title }}</span>
+                    <div>
+                        <a href="{{ url_for('course.add_question', quiz_id=quiz.id) }}"
+                            class="btn btn-md btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="Add Question">
+                            <i class="fas fa-plus-circle"></i> Add
+                        </a>
+                        <a href="{{ url_for('course.view_questions', quiz_id=quiz.id) }}"
+                            class="btn btn-md btn-outline-info ms-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="View/Edit Questions">
+                            <i class="fas fa-eye"></i> View/Edit
+                        </a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+
+</div>
+<hr>
+{% endblock %}

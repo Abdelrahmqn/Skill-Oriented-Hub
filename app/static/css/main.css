@@ -115,8 +115,8 @@
 }
 
 .btn-primary:hover {
-  background-color: var(--roze)!important;
-  color: var(blue) !important;
+  background-color: rgba(38, 38, 233, 0.856);
+
 }
 
 
@@ -130,4 +130,12 @@
 .custom-prev:hover .carousel-control-prev-icon,
 .custom-next:hover .carousel-control-next-icon {
   background-color: var(--roze);
+}
+
+
+.card-text-no {
+  max-height: 100px !important;
+  text-wrap: nowrap;        /* Limit the height to 200px */
+  overflow: hidden;         /* Hide overflowed content */
+  text-overflow: ellipsis;  /* Add ellipsis (...) to overflowed text */
 }

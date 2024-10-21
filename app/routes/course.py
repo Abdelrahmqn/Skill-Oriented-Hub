@@ -10,6 +10,7 @@ from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed
 from PIL import Image
 
+
 from app import db
 from app.models import Course, Enrollment, Category, Lesson, Question, Quiz, QuizAttempt, Payment
 from app.utils import delete_file_if_exists, save_file, get_embed_url
@@ -40,7 +41,7 @@ def add_category():
             flash('Category added successfully!', 'success')
             return redirect(url_for('course.create_course'))  # Redirect to wherever appropriate in your app
 
-    return render_template('add_category.html', form=form)
+    return render_template('admin/add_category.html', form=form)
 
 
 
@@ -66,7 +67,33 @@ def course_details(course_id):
     enrollment = Enrollment.query.filter_by(student_id=current_user.id, course_id=course.id).first()
     enrolled = enrollment is not None
 
-    return render_template('course_details.html', course=course, enrolled=enrolled )
+    return render_template('course/course_details.html', course=course, enrolled=enrolled )
+
+
+# Route to display all lessons in the course
+@bp.route('/progress/<int:course_id>')
+@login_required
+def course_progress(course_id):
+    # Fetch the course or return 404 if not found
+    course = Course.query.get_or_404(course_id)
+
+    # Ensure the student is enrolled in the course
+    enrollment = Enrollment.query.filter_by(student_id=current_user.id, course_id=course.id).first()
+    enrolled = enrollment is not None
+
+    # If the user is not enrolled, redirect to the course details page
+    if current_user.role == 'student' and not enrolled:
+        flash('You must be enrolled in the course to view the lessons.', 'danger')
+        return redirect(url_for('course.course_details', course_id=course.id))
+
+    # Fetch all lessons related to the course
+    lessons = Lesson.query.filter_by(course_id=course.id).all()
+
+    # Render the template to show the course and its lessons
+    return render_template('course/course_progress.html', course=course, lessons=lessons, enrolled=enrolled, get_embed_url=get_embed_url)
+
+
+
 
 # Function store image
 def save_picture(form_picture):
@@ -113,15 +140,16 @@ def create_course():
         flash('Course created successfully!', 'success')
         return redirect(url_for('course.instructor_dashboard'))
 
-    return render_template('create_course.html', form=form)
+    return render_template('course/create_course.html', form=form)
 
 
 # Route for listing all available courses
 @bp.route('/')
 def list_courses():
     courses = Course.query.all()
-    
-    return render_template('list_courses.html', courses=courses)
+    categories = Category.query.all()
+
+    return render_template('course/list_courses.html', courses=courses, categories=categories)
 
 
 # # Route for enrolling in a course (for students)
@@ -224,6 +252,8 @@ def unenroll(course_id):
 
     return redirect(url_for('course.course_details', course_id=course.id))
 
+
+
 @bp.route('/instructor/dashboard')
 @login_required
 def instructor_dashboard():
@@ -232,7 +262,7 @@ def instructor_dashboard():
         return redirect(url_for('main.index'))
 
     courses = Course.query.filter_by(teacher_id=current_user.id).all()
-    return render_template('instructor_dashboard.html', courses=courses)
+    return render_template('dashboard/instructor_dashboard.html', courses=courses)
 
 
 @bp.route('/student/dashboard')
@@ -242,8 +272,10 @@ def student_dashboard():
         flash('Only students can access the dashboard.', 'danger')
         return redirect(url_for('main.index'))
 
+
+
     enrollments = Enrollment.query.filter_by(student_id=current_user.id).all()
-    return render_template('student_dashboard.html', enrollments=enrollments)
+    return render_template('dashboard/student_dashboard.html', enrollments=enrollments)
 
 
 @bp.route('/edit/<int:course_id>', methods=['GET', 'POST'])
@@ -269,7 +301,7 @@ def edit_course(course_id):
         flash('Course updated successfully!', 'success')
         return redirect(url_for('course.instructor_dashboard'))
 
-    return render_template('edit_course.html', form=form, course=course)
+    return render_template('course/edit_course.html', form=form, course=course)
 
 
 @bp.route('/<int:course_id>/lessons', methods=['GET', 'POST'])
@@ -306,7 +338,7 @@ def add_lesson(course_id):
         flash('Lesson added successfully!', 'success')
         return redirect(url_for('course.course_details', course_id=course.id))
 
-    return render_template('add_lesson.html', form=form, course=course)
+    return render_template('course/add_lesson.html', form=form, course=course)
 
 
 # Form for adding a lesson
@@ -338,7 +370,7 @@ def add_quiz(course_id):
         flash('Quiz added successfully!', 'success')
         return redirect(url_for('course.course_details', course_id=course.id))
 
-    return render_template('add_quiz.html', form=form, course=course)
+    return render_template('course/add_quiz.html', form=form, course=course)
 
 
 @bp.route('/<int:quiz_id>/questions', methods=['GET', 'POST'])
@@ -359,7 +391,7 @@ def add_question(quiz_id):
         flash('Question added successfully!', 'success')
         return redirect(url_for('course.course_details', course_id=course.id))
 
-    return render_template('add_question.html', form=form, quiz=quiz)
+    return render_template('course/add_question.html', form=form, quiz=quiz)
 
 
 # Forms for quizzes and questions
@@ -389,7 +421,7 @@ def view_lesson(lesson_id):
     if lesson.youtube_link:
         lesson.youtube_link = get_embed_url(lesson.youtube_link)
 
-    return render_template('view_lesson.html', lesson=lesson)
+    return render_template('course/view_lesson.html', lesson=lesson)
 
 @bp.route('/quiz/<int:quiz_id>', methods=['GET', 'POST'])
 @login_required
@@ -459,7 +491,7 @@ def take_quiz(quiz_id):
 
         # Show feedback to the student
         return render_template(
-            'quiz_results.html',
+            'course/quiz_results.html',
             quiz=quiz,
             results=results,
             correct_answers=correct_answers,
@@ -472,7 +504,7 @@ def take_quiz(quiz_id):
         logging.info(f"Form validation errors: {form.errors}")
 
     # Render the quiz form for students
-    return render_template('take_quiz.html', quiz=quiz, form=form)
+    return render_template('course/take_quiz.html', quiz=quiz, form=form)
 
 @bp.route('/quiz/<int:quiz_id>/questions', methods=['GET', 'POST'])
 @login_required
@@ -494,7 +526,7 @@ def view_questions(quiz_id):
         return redirect(url_for('course.view_questions', quiz_id=quiz.id))
 
     questions = Question.query.filter_by(quiz_id=quiz.id).all()
-    return render_template('view_questions.html', form=form, quiz=quiz, questions=questions)
+    return render_template('course/view_questions.html', form=form, quiz=quiz, questions=questions)
 
 
 @bp.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])
@@ -516,7 +548,7 @@ def edit_question(question_id):
         flash('Question updated successfully!', 'success')
         return redirect(url_for('course.view_questions', quiz_id=quiz.id))
 
-    return render_template('edit_question.html', form=form, question=question)
+    return render_template('course/edit_question.html', form=form, question=question)
 
 
 
@@ -556,4 +588,4 @@ def edit_lesson(lesson_id):
         flash('Lesson updated successfully!', 'success')
         return redirect(url_for('course.course_details', course_id=course.id))
 
-    return render_template('edit_lesson.html', form=form, course=course, lesson=lesson)
+    return render_template('course/edit_lesson.html', form=form, course=course, lesson=lesson)

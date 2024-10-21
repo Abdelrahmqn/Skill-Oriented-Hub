@@ -2,41 +2,39 @@
 
 {% block content %}
 <div class="container my-4">
-  <h1 class="text-center mb-4">Manage Users</h1>
+  <h1 class="text-center mb-4">Manage Categories</h1>
 
   <!-- Search Bar -->
   <div class="row mb-3">
     <div class="col-md-6">
-      <input type="text" id="userSearch" class="form-control" placeholder="Search for users...">
+      <input type="text" id="categorySearch" class="form-control" placeholder="Search for categories...">
     </div>
     <div class="col-md-6">
-      <a href="{{ url_for('admin.add_user')}}" class="btn btn-primary btn-md">Add User</a>
+      <a href="{{ url_for('course.add_category')}}" class="btn btn-primary btn-md">Add Category</a>
     </div>
   </div>
 
-  <!-- Users Table -->
+  <!-- Categories Table -->
   <div class="table-responsive">
     <table class="table table-bordered table-hover">
       <thead class="table-dark">
         <tr>
           <th>#</th>
           <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
+          <th>Description</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="userTable">
-        {% for user in users %}
+      <tbody id="categoryTable">
+        {% for category in categories %}
         <tr>
           <td>{{ loop.index }}</td>
-          <td>{{ user.name }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.role.capitalize() }}</td>
+          <td>{{ category.name }}</td>
+          <td>{{ category.description }}</td>
           <td>
-            <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-primary btn-sm">Edit</a>
+            <a href="{{ url_for('admin.edit_category', category_id=category.id) }}" class="btn btn-primary btn-sm">Edit</a>
 
-            <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" style="display:inline;">
+            <form action="{{ url_for('admin.delete_category', category_id=category.id) }}" method="POST" style="display:inline;">
               <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
 
@@ -50,14 +48,14 @@
 
 <!-- JavaScript for Search Filtering -->
 <script>
-  document.getElementById('userSearch').addEventListener('keyup', function () {
+  document.getElementById('categorySearch').addEventListener('keyup', function () {
     let searchValue = this.value.toLowerCase();
-    let tableRows = document.querySelectorAll('#userTable tr');
+    let tableRows = document.querySelectorAll('#categoryTable tr');
 
     tableRows.forEach(row => {
       let name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-      let email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-      if (name.includes(searchValue) || email.includes(searchValue)) {
+      let description = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+      if (name.includes(searchValue) || description.includes(searchValue)) {
         row.style.display = '';
       } else {
         row.style.display = 'none';

@@ -16,6 +16,9 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    lesson_completions = db.relationship('LessonCompletion', back_populates='student', cascade="all, delete-orphan")
+
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -106,6 +109,20 @@ class Lesson(db.Model):
     video_path = db.Column(db.String(200))  # Store uploaded video path if provided
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
     course = db.relationship('Course', back_populates='lessons')  # Change backref to back_populates
+
+    completions = db.relationship('LessonCompletion', back_populates='lesson', cascade="all, delete-orphan")
+
+
+class LessonCompletion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('lesson.id'), nullable=False)
+    completed = db.Column(db.Boolean, default=False, nullable=False)
+    completion_date = db.Column(db.DateTime, default=None)  # Track the date the lesson was completed
+
+    student = db.relationship('User', back_populates='lesson_completions')
+    lesson = db.relationship('Lesson', back_populates='completions')
+
 
 
 class Quiz(db.Model):

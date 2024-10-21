@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Edit Lesson: {{ lesson.title }}</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="form-group">
+        {{ form.hidden_tag() }}
+
+        <!-- Lesson Title -->
+        <div class="mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control", size=40, placeholder="Enter lesson title") }}
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="mb-3">
+            {{ form.content.label(class="form-label") }}
+            {{ form.content(class="form-control", cols=40, rows=5, placeholder="Enter lesson content") }}
+        </div>
+
+        <!-- YouTube Link -->
+        <div class="mb-3">
+            {{ form.youtube_link.label(class="form-label") }}
+            {{ form.youtube_link(class="form-control", size=50, placeholder="YouTube video link") }}
+        </div>
+
+        <!-- Video File -->
+        <div class="mb-3">
+            {{ form.video_file.label(class="form-label") }}
+            {{ form.video_file(class="form-control") }}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-4">
+            {{ form.submit(class="btn btn-success") }}
+        </div>
+    </form>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{{ url_for('course.course_details', course_id=lesson.course.id) }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Course
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Course Title -->
+    <h2 class="text-center mb-4"> Course : {{ course.title }}</h2>
+
+    <div class="row g-4">
+
+        <!-- Right column for course details, lessons, and quizzes -->
+        <div class="col-md-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <!-- Course Information -->
+                    <p class="card-text"><strong>Description:</strong> {{ course.description }}</p>
+                    <p class="card-text"><strong>Instructor:</strong> {{ course.instructor.name }}</p>
+                </div>
+            </div>
+
+            <!-- Accordion for Lessons -->
+            {% if current_user.is_authenticated and current_user.role == 'student' %}
+            {% if enrolled %}
+            <div class="accordion" id="accordionLessons">
+                <h3 class="mb-3">Lessons</h3>
+                {% for lesson in course.lessons %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ lesson.id }}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ lesson.id }}" aria-expanded="true" aria-controls="collapse{{ lesson.id }}">
+                            {{ lesson.title }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ lesson.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ lesson.id }}" >
+                        <div class="accordion-body">
+                            <p class="my-3 p-2">{{ lesson.content }}</p>
+
+                            <!-- Embed video (if available) -->
+                            {% if lesson.youtube_link %}
+                            {% set video_id = lesson.youtube_link.split('v=')[-1] %}
+                            <div class="embed-responsive" style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden;">
+                                <iframe class="embed-responsive-item"
+                                        src="https://www.youtube.com/embed/{{ video_id }}"
+                                        style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endif %}
+
+            <!-- Quizzes Section -->
+            {% if course.quizzes|length > 0 %}
+            <div class="mt-5">
+                <h3 class="mb-3">Quizzes</h3>
+                <div class="list-group">
+                    {% for quiz in course.quizzes %}
+                    <a href="{{ url_for('course.take_quiz', quiz_id=quiz.id) }}" class="list-group-item list-group-item-action">
+                        {{ quiz.title }}
+                        {% set attempt = quiz.attempts | selectattr('student_id', 'equalto', current_user.id) | first %}
+                        {% if attempt %}
+                        <span class="badge bg-success float-end">Score: {{ attempt.score }}%</span> (Already Attempted)
+                        {% else %}
+                        <span class="badge bg-warning float-end">Not Attempted</span>
+                        {% endif %}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+<hr>
+{% endblock %}

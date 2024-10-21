@@ -105,7 +105,7 @@ def account():
     elif request.method == 'GET':
         form.name.data = current_user.name
         form.email.data = current_user.email
-    return render_template('account.html', form=form)
+    return render_template('auth/account.html', form=form)
 
 
 class RequestResetForm(FlaskForm):
