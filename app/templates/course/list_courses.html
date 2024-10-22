@@ -1,44 +1,40 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="h3  text-center justify-content-center py-1 mb-5 mt-2 rounded shadow-sm">
-    Available Courses
-</div>
+<div class="container my-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+        {% for course in courses %}
+        <div class="col">
+            <div class="card shadow-sm h-100 border-2">
+                <img src="{{ url_for('static', filename='img_course/' + course.courseImage) }}" class="card-img-top" alt="{{ course.title }}" style="width: auto; ">
 
-
-<div class="row">
-    {% for course in courses %}
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm">
-            <img src="{{ url_for('static', filename='img_course/' + course.courseImage) }}" height="350px"
-                class="card-img-top" alt="{{ course.title }}">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <a href="{{ url_for('course.course_details', course_id=course.id) }}"
-                        class="text-decoration-none">{{ course.title }}</a>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{ url_for('course.course_details', course_id=course.id) }}" class="text-decoration-none">{{ course.title }}</a>
+                    </h5>
+                    <p class="card-text-no text-muted">{{ course.description }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span class="text-muted">
+                        <i class="fas fa-user"></i> {{ course.total_students }} Students
                     </span>
-                </h5>
-                <p class="card-text-no">{{ course.description }}</p>
-                <p class="card-text"><strong>Price:</strong> ${{ course.price }}</p>
-                <p class="card-text"><strong>Instructor:</strong> {{ course.instructor.name }}</p>
-                <p class="card-text"><strong>Total Student:</strong> {{ course.total_students }}</p>
-
+                    <span class="text-muted">
+                        <i class="fas fa-dollar-sign"></i> {{ course.price }}
+                    </span>
+                </div>
                 {% if current_user.is_authenticated %}
                 {% if current_user.role == 'student' %}
-                <div class="d-flex justify-content-center justify-content-evenly flex-grow-1">
-                    <a href="{{ url_for('course.course_details', course_id=course.id) }}"
-                        class="btn btn-outline-info ">View Details</a>
-                    <form action="{{ url_for('course.enroll', course_id=course.id) }}" method="POST">
-                        <button type="submit" class="btn btn-outline-secondary">Enroll in this course</button>
-
+                <div class="card-footer text-center">
+                    <a href="{{ url_for('course.course_details', course_id=course.id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                    <form action="{{ url_for('course.enroll', course_id=course.id) }}" method="POST" class="d-inline-block">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Enroll in this course</button>
+                    </form>
                 </div>
-
                 {% endif %}
                 {% endif %}
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
-
 {% endblock %}

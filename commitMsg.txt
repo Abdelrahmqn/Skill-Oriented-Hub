@@ -1,8 +1,0 @@
-Enhanced Learning Course Design & Folder Management
-
-## Details
-- Embedded lesson videos in an accordion to improve user experience.
-- Grouped templates by route name for better organization and navigation.
-
-## Changes Made
-- Grouped templates by route name for better organization and navigation

@@ -1,121 +1,136 @@
 :root {
-    --vert: #7b9b2b;
-    --roze: #fc83cd33;
-    --blue: #0b76b488;
+  --vert: #7b9b2b;
+  --roze: #fc83cd33;
+  --blue: #0b76b488;
 
 }
 
 *{
-    font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 
 .navbar-toggler {
-    border: none;
+  border: none;
 }
 
 .navbar-toggler:focus,
 .btn-close:focus {
-    box-shadow: none;
-    outline: none;
+  box-shadow: none;
+  outline: none;
 }
 
 .nav-link {
-    font-weight: 500;
-    position: relative;
-    border: none;
+  font-weight: 500;
+  position: relative;
+  border: none;
 }
 @media (min-width: 768px) {
-    .nav-link {
-        font-size: 1rem;
-    }
+  .nav-link {
+      font-size: 1rem;
+  }
 
-    .nav-link::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translatex(-50%);
-        width: 0%;
-        height: 2px;
-        background-color: var(--blue);
-        visibility: hidden;
-        transition: 0.3s ease-in-out;
-    }
+  .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translatex(-50%);
+      width: 0%;
+      height: 2px;
+      background-color: var(--blue);
+      visibility: hidden;
+      transition: 0.3s ease-in-out;
+  }
 }
 
 .nav-link:hover::before,
 .nav-link.active::before {
-    width: 100%;
-    visibility: visible;
+  width: 100%;
+  visibility: visible;
 
 }
 
 .nav-link:hover{
-  transform: scale(1.1);
+transform: scale(1.1);
 }
 
 /* Common button styles (for both Log In and Sign Up) */
 .navbar-collapse .btn-log-in,
 .navbar-collapse .btn-sign-up {
 
-    color: #fff;
-    width: 100px;
-    margin-right: 15px;
-    padding: 6px 12px;
-    text-align: center;
-    text-decoration: none;
-    border:none;
-    border-radius: 4px;
-    transition: all 0.5s ease;
-    cursor: pointer;
-    user-select: none;
-    background-color: var(--blue);
-    margin-bottom: 5px;
+  color: #fff;
+  width: 100px;
+  margin-right: 15px;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  border:none;
+  border-radius: 4px;
+  transition: all 0.5s ease;
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--blue);
+  margin-bottom: 5px;
 }
 
 
 /* Hover effects */
 .navbar-collapse .btn-log-in:hover,
 .navbar-collapse .btn-sign-up:hover {
-    background-color: rgba(38, 38, 233, 0.856);
-    transform: scale(1.2);
-    color: #ffffff;
-    text-decoration: none;
+  background-color: rgba(38, 38, 233, 0.856);
+  transform: scale(1.2);
+  color: #ffffff;
+  text-decoration: none;
 }
 
 
 /* Custom styles for the landing page */
 .hero {
-  height: auto;
-  min-height: 700px;
+height: auto;
+min-height: 700px;
 
 
 }
 
+
+.hero-img {
+width: 600px;
+transition: 0.3s;
+position: relative;
+animation: landing-image 10s linear infinite;
+}
+
+/* Start Animations */
+@keyframes landing-image {
+0%, 100% {
+  top: 0;
+}
+50% {
+  top: -50px;
+}
+}
+
+
 .hero .hero-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+display: flex;
+align-items: center;
+justify-content: space-between;
 
 }
 
 .hero .hero-content .text-section {
-  max-width: 600px;
+max-width: 600px;
 }
 
-.hero img {
-  max-width: 100%;
-  height: auto;
-}
 
 .btn-primary {
-  background-color: var(--blue) ;
-  border: none;
+background-color: var(--blue) ;
+border: none;
 }
 
 .btn-primary:hover {
-  background-color: rgba(38, 38, 233, 0.856);
+background-color: rgba(38, 38, 233, 0.856);
 
 }
 
@@ -123,19 +138,19 @@
 /* Custom color for the carousel control buttons */
 .custom-prev .carousel-control-prev-icon,
 .custom-next .carousel-control-next-icon {
-  background-color: var(--blue)
+background-color: var(--blue)
 }
 
 /* Optional: Change color on hover */
 .custom-prev:hover .carousel-control-prev-icon,
 .custom-next:hover .carousel-control-next-icon {
-  background-color: var(--roze);
+background-color: var(--roze);
 }
 
 
 .card-text-no {
-  max-height: 100px !important;
-  text-wrap: nowrap;        /* Limit the height to 200px */
-  overflow: hidden;         /* Hide overflowed content */
-  text-overflow: ellipsis;  /* Add ellipsis (...) to overflowed text */
+max-height: 50px !important;
+
+overflow: hidden;
+text-overflow: ellipsis;
 }
