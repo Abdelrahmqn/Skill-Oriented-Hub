@@ -93,6 +93,25 @@
 
 }
 
+
+.hero-img {
+  width: 600px;
+  transition: 0.3s;
+  position: relative;
+  animation: landing-image 10s linear infinite;
+}
+
+/* Start Animations */
+@keyframes landing-image {
+  0%, 100% {
+    top: 0;
+  }
+  50% {
+    top: -50px;
+  }
+}
+
+
 .hero .hero-content {
   display: flex;
   align-items: center;
@@ -104,10 +123,6 @@
   max-width: 600px;
 }
 
-.hero img {
-  max-width: 100%;
-  height: auto;
-}
 
 .btn-primary {
   background-color: var(--blue) ;
@@ -134,8 +149,8 @@
 
 
 .card-text-no {
-  max-height: 100px !important;
-  text-wrap: nowrap;        /* Limit the height to 200px */
-  overflow: hidden;         /* Hide overflowed content */
-  text-overflow: ellipsis;  /* Add ellipsis (...) to overflowed text */
+  max-height: 50px !important;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
