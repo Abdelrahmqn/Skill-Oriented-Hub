@@ -44,9 +44,8 @@
                         </a>
                         {% else %}
                         <!-- Enroll button if not enrolled -->
-                        <form action="{{ url_for('course.enroll', course_id=course.id) }}" method="POST">
-                            <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-person-plus-fill"></i>
-                                Enroll</button>
+                        <form action="{{ url_for('payment.init_payment', course_id=course.id) }}" method="POST">
+                            <button type="submit" class="btn btn-primary">Buy Course for ${{ course.price }}</button>
                         </form>
                         {% endif %}
                         {% endif %}
