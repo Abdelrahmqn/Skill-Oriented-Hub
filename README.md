@@ -27,12 +27,6 @@
 
 ---
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/Abdelrahmqn/Skill-Oriented-Hub/blob/main/LICENSE) file for details.
-
----
-
 ## Issues & Feedback
 
 Found a bug? Have a feature request? Please [open an issue](https://github.com/Abdelrahmqn/Skill-Oriented-Hub/issues).
