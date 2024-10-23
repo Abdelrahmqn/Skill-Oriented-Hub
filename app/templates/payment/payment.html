@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container-fluid m-5">
+  <div class="m-5" id="paypal-button-container"></div>
+
+  <script>
+    paypal.Buttons({
+      createOrder: (data, actions) => {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: {{price}} // Change this to your desired amount
+            }
+          }]
+        });
+      },
+
+      onApprove: (data, actions) => {
+        const course_id = {{ course_id }}; // Pass the course ID here
+
+        return fetch(`/payments/${data.orderID}/capture`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ course_id: course_id }) // Send course_id in the body
+        })
+
+        .then((response) => response.json())
+        .then((orderData) => {
+          if (orderData.error) {
+            console.error("Error:", orderData.error);
+            alert(`Error: ${orderData.error}`);
+          } else {
+            console.log('Capture result', orderData);
+            window.location.href = `{{ url_for('main.index') }}`;
+
+          }
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+          //alert("An error occurred. Please try again.");
+          window.location.href = `{{ url_for('course.course_details', course_id=course_id) }}`;
+
+        });
+      }
+
+    }).render('#paypal-button-container');
+  </script>
+</div>
+{% endblock %}

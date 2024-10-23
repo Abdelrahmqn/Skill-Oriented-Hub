@@ -1,0 +1,6 @@
+mplement successful PayPal payment flow
+
+- Add route to initiate and create PayPal order
+- Capture payment and enroll user on successful payment
+- Redirect user to course details page on payment success
+- Handle error cases and return appropriate messages

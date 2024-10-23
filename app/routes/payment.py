@@ -1,85 +1,70 @@
+import logging
 import requests
 from os import getenv
-from flask import Blueprint, request, render_template, flash, redirect, url_for, session
-from flask_login import login_required
+from flask import Blueprint, request, render_template, flash, redirect, url_for, session, jsonify
+from flask_login import login_required, current_user
 from ..models import Course, Enrollment
 from .. import db
 
 bp = Blueprint('payment', __name__)
 
-# Create a function to initiate and handle responses.
-def create_payment_order(amount, currency='USD'):
-    try:
-        response = requests.post(
-            f"{getenv('PAYMOB_ENDPOINT')}/api/ecommerce/orders",  # Make sure endpoint is correct
-            json={
-                "amount_cents": amount * 100,  # Amount is converted to cents
-                "currency": currency,
-                "integration_id": getenv('PAYMOB_INTEGRATION_ID'),
-                "merchant_order": {
-                    "metadata": {
-                        "user_id": session.get('user_id'),
-                        "course_id": session.get('course_id')
-                    }
-                }
-            },
-            headers={
-                'Authorization': f"Bearer {getenv('PAYMOB_API_KEY')}",
-                'Content-Type': 'application/json'
-            }
-        )
-
-        return response.json()
-    except requests.RequestException as e:
-        print(f"Payment error: {e}")
-        return {"error": "Payment request failed"}
-
 @bp.route('/pay/<int:course_id>', methods=['POST'])
 @login_required
 def init_payment(course_id):
     course = Course.query.get_or_404(course_id)
+    return render_template("payment/payment.html", course_id=course_id, price=course.price)
 
-    # Store the course ID in the session for later use in payment callback
-    session['course_id'] = course.id
-    session['user_id'] = session.get('user_id')
+@bp.route("/payments/<order_id>/capture", methods=["POST"])
+@login_required
+def capture_payment(order_id):
+    # Capture the payment
+    captured_payment = approve_payment(order_id)
 
-    # Create a payment order via Paymob
-    order = create_payment_order(course.price, currency='USD')
-
-    if order.get('id'):
-        # Store the order ID temporarily for tracking (you can use session)
-        session['order_id'] = order['id']
-
-        # Generate payment link using Paymob's iframe URL (replace with actual format)
-        payment_url = f"https://accept.paymob.com/api/acceptance/iframes/{getenv('PAYMOB_IFRAME_ID')}?payment_token={order['token']}"
-
-        # Redirect the user to Paymob's payment page
-        return redirect(payment_url)
-    else:
-        flash('Payment initiation failed. Please try again.', 'danger')
-        return redirect(url_for('course.course_details', course_id=course.id))
-
-@bp.route('/purchase_unavailable')
-def purchase_unavailable():
-    flash('Course purchase is currently unavailable. Please check back later.', 'info')
-    return render_template('purchase_unavailable.html')
-
-@bp.route('/payment_callback', methods=['POST'])
-def payment_callback():
-    data = request.json
-
-    # Check for a successful payment response
-    if data.get('success') and data.get('obj', {}).get('amount_cents'):
-        user_id = data['obj']['metadata']['user_id']
-        course_id = data['obj']['metadata']['course_id']
-
-        # Create enrollment if payment was successful
-        enrollment = Enrollment(student_id=user_id, course_id=course_id)
+    # Check if the payment was successful
+    if captured_payment['status'] == 'COMPLETED':
+        # Enroll the student in the course
+        flash('Course created successfully!', 'success')
+        course_id = request.json.get('course_id')  # Get course_id from the request
+        enrollment = Enrollment(student_id=current_user.id, course_id=course_id)
+        # Add the enrollment to the database
         db.session.add(enrollment)
         db.session.commit()
-
-        flash('Payment successful! You are now enrolled in the course.', 'success')
+        flash('You have been successfully enrolled the course.', 'success')
+        # Redirect to the course detail page after successful payment
+        return redirect(url_for('payment.payment_success', order_id=order_id))  # Update this line with the correct route name for course details
     else:
-        flash('Payment failed or was canceled.', 'danger')
+        return jsonify({"error": "Payment not completed."}), 400
 
-    return redirect(url_for('course.list_courses'))
+@bp.route('/payment/success/<order_id>')
+@login_required
+def payment_success(order_id):
+    return render_template('payment/payment_success.html', order_id=order_id)
+
+def approve_payment(order_id):
+    api_link = f"https://api-m.sandbox.paypal.com/v2/checkout/orders/{order_id}/capture"
+    client_id = getenv("PAYPAL_CLIENT_ID")
+    secret = getenv("PAYPAL_SECRET")
+    access_token = get_paypal_access_token(client_id, secret)
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    response = requests.post(url=api_link, headers=headers)
+    response.raise_for_status()  # Raises an exception for HTTP errors
+    return response.json()
+
+def get_paypal_access_token(client_id, secret):
+    auth_url = "https://api-m.sandbox.paypal.com/v1/oauth2/token"
+
+    headers = {
+        "Accept": "application/json",
+        "Accept-Language": "en_US"
+    }
+
+    auth_response = requests.post(auth_url, headers=headers, auth=(client_id, secret), data={"grant_type": "client_credentials"})
+    auth_response.raise_for_status()  # Raises an exception for HTTP errors
+
+    token_data = auth_response.json()
+    return token_data['access_token']
