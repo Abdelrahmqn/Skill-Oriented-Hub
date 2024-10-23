@@ -36,9 +36,9 @@ Found a bug? Have a feature request? Please [open an issue](https://github.com/A
 ## Contact
 
 For further questions or suggestions, contact the project owner:  
-**GitHub:** [Abdelrahmqn](https://github.com/Abdelrahmqn)  
-**GitHub:** [jawkat](https://github.com/jawkat) 
-**GitHub:** [Omar Ahmed](https://github.com/Omar2454) 
+**GitHub:** [Abdelrahmqn](https://github.com/Abdelrahmqn),
+[jawkat](https://github.com/jawkat)
+[Omar Ahmed](https://github.com/Omar2454)
 ---
 
 ## Releases
