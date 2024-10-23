@@ -1,6 +1,6 @@
 # Skill-Oriented Hub
 
-![License](https://img.shields.io/github/license/Abdelrahmqn/Skill-Oriented-Hub) ![Issues](https://img.shields.io/github/issues/Abdelrahmqn/Skill-Oriented-Hub) ![Stars](https://img.shields.io/github/stars/Abdelrahmqn/Skill-Oriented-Hub)
+![Issues](https://img.shields.io/github/issues/Abdelrahmqn/Skill-Oriented-Hub) ![Stars](https://img.shields.io/github/stars/Abdelrahmqn/Skill-Oriented-Hub)
 
 ## Overview
 
