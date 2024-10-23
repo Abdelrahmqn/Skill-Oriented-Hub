@@ -7,7 +7,36 @@
 **Skill-Oriented Hub** is a platform designed to foster skill development across various domains by providing users with tools, exercises, and interactive challenges. The project aims to help individuals enhance their abilities in technology, creativity, and beyond by utilizing a structured and community-driven environment.
 
 ---
+## Installation 🔧
 
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/Abdelrahmqn/Skill-Oriented-Hub.git
+    cd Skill-Oriented-Hub
+    ```
+
+2. Create and activate a virtual environment:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    ```
+
+3. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. Set up the database:
+    ```bash
+    python3 create_table
+    ```
+
+5. Run the application:
+    ```bash
+    flask run
+    ```
+
+---
 ## Features
 
 - **Interactive Skill Challenges:** Users can engage with hands-on exercises tailored to different levels of expertise.
@@ -37,13 +66,8 @@ Found a bug? Have a feature request? Please [open an issue](https://github.com/A
 
 For further questions or suggestions, contact the project owner:  
 **GitHub:** [Abdelrahmqn](https://github.com/Abdelrahmqn),
-[jawkat](https://github.com/jawkat)
+[jawkat](https://github.com/jawkat),
 [Omar Ahmed](https://github.com/Omar2454)
----
-
-## Releases
-
-You can find the latest releases and version history [here](https://github.com/Abdelrahmqn/Skill-Oriented-Hub/releases).
 
 ---
 
