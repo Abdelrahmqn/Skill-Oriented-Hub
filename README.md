@@ -1,7 +1,3 @@
-Here is a well-structured `README.md` template tailored for your project, "Skill-Oriented Hub," based on its purpose and the current structure visible on the GitHub repository:
-
----
-
 # Skill-Oriented Hub
 
 ![License](https://img.shields.io/github/license/Abdelrahmqn/Skill-Oriented-Hub) ![Issues](https://img.shields.io/github/issues/Abdelrahmqn/Skill-Oriented-Hub) ![Stars](https://img.shields.io/github/stars/Abdelrahmqn/Skill-Oriented-Hub)
