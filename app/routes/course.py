@@ -152,56 +152,6 @@ def list_courses():
     return render_template('course/list_courses.html', courses=courses, categories=categories)
 
 
-# # Route for enrolling in a course (for students)
-# @bp.route('/enroll/<int:course_id>', methods=['POST'])
-# @login_required
-# def enroll(course_id):
-#     if current_user.role != 'student':
-#         flash('Only students can enroll in courses.', 'danger')
-#         return redirect(url_for('course.list_courses'))
-
-#     # Fetch user and course from the request form
-#     user_id = request.form.get('user_id')
-#     course_id = request.form.get('course_id')
-
-#     purchased = Payment.query.filter_by(user_id=user_id, course_id=course_id).first()
-#     if not purchased:
-#         flash('You need to purchase this course first.', 'warning')
-#         return redirect(url_for('course.list_courses'))
-
-#     course = Course.query.get_or_404(course_id)
-#     enrollment = Enrollment.query.filter_by(student_id=current_user.id, course_id=course.id).first()
-
-#     if enrollment:
-#         flash('You are already enrolled in this course.', 'info')
-#     else:
-#         new_enrollment = Enrollment(student_id=current_user.id, course_id=course.id)
-#         db.session.add(new_enrollment)
-#         db.session.commit()
-#         flash('You have successfully enrolled in the course!', 'success')
-
-#     return redirect(url_for('course.list_courses'))
-#     if current_user.role != 'student':
-#         flash('Only students can enroll in courses.', 'danger')
-#         return redirect(url_for('course.list_courses'))
-
-
-#     course = Course.query.get_or_404(course_id)
-
-#     # Check if the student is already enrolled in the course
-#     enrollment = Enrollment.query.filter_by(student_id=current_user.id, course_id=course.id).first()
-
-#     if enrollment:
-#         flash('You are already enrolled in this course.', 'info')
-#     else:
-
-#         new_enrollment = Enrollment(student_id=current_user.id, course_id=course.id)
-#         db.session.add(new_enrollment)
-#         db.session.commit()
-#         flash('You have successfully enrolled in the course!', 'success')
-
-#     return redirect(url_for('course.course_details', course_id=course.id))
-
 # Route for enrolling in a course (for students)
 @bp.route('/enroll/<int:course_id>', methods=['POST'])
 @login_required
@@ -223,7 +173,7 @@ def enroll(course_id):
         new_enrollment = Enrollment(student_id=current_user.id, course_id=course.id)
         db.session.add(new_enrollment)
         db.session.commit()
-        flash('You have successfully enrolled in the course!', 'success')
+        flash('You have been successfully unenrolled from the course.', 'success')
 
     return redirect(url_for('course.course_details', course_id=course.id))
 
